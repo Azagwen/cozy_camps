@@ -1,7 +1,7 @@
 package net.kings_of_devs.cozy_camping;
 
 import net.fabricmc.api.ModInitializer;
-import net.kings_of_devs.cozy_camping.block.CozyCampingBlocks;
+import net.kings_of_devs.cozy_camping.block.BlockRegistry;
 import net.minecraft.util.Identifier;
 
 public class CozyCampingMain implements ModInitializer {
@@ -13,7 +13,7 @@ public class CozyCampingMain implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		CozyCampingBlocks.init();
+		BlockRegistry.init();
 
 		System.out.println("Hello Fabric world!");
 	}
