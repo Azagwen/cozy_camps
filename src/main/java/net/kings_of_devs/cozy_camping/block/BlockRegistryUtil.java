@@ -6,6 +6,8 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.util.registry.Registry;
 
+import java.util.Set;
+
 public class BlockRegistryUtil {
 
     /**
@@ -16,10 +18,11 @@ public class BlockRegistryUtil {
      * @param item      The {@link Item} Object corresponding to the Block you want to register.
      * @param <B>       The Type of the said Block (implicit most of the time).
      */
-    protected static <B extends Block, I extends Item> void registerBlock(String path, B block, I item) {
+    protected static <B extends Block, I extends Item> void registerBlock(Set<Item> itemGroupTab, String path, B block, I item) {
         var id = CozyCampingMain.id(path);
         Registry.register(Registry.BLOCK, id, block);
         Registry.register(Registry.ITEM, id, item);
+        itemGroupTab.add(item);
     }
 
     /**
@@ -29,8 +32,8 @@ public class BlockRegistryUtil {
      * @param block     The {@link Block} object you want to register.
      * @param <B>       The Type of the said Block (implicit most of the time).
      */
-    protected static <B extends Block> void registerBlock(String path, B block) {
+    protected static <B extends Block> void registerBlock(Set<Item> itemGroupTab, String path, B block) {
         var item = new BlockItem(block, new Item.Settings());
-        registerBlock(path, block, item);
+        registerBlock(itemGroupTab, path, block, item);
     }
 }
