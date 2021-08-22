@@ -1,22 +1,32 @@
 package net.kings_of_devs.cozy_camping.group;
 
-
-import net.kings_of_devs.cozy_camping.CozyCampingMain;
-import net.kings_of_devs.cozy_camping.block.BlockRegistry;
-import net.minecraft.block.Blocks;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemConvertible;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 
-public class CozyCampingItemGroup extends TabbedItemGroup {
-    public final ItemGroupTab COZY_CAMPING_BLOCKS = this.registerTab(Blocks.BEDROCK, "blocks", CozyCampingMain.BLOCKS_TAB);
-    public final ItemGroupTab COZY_CAMPING_MISC = this.registerTab(Blocks.BEDROCK, "misc", CozyCampingMain.MISC_TAB);
+import java.util.Set;
+import java.util.function.Function;
 
-    public CozyCampingItemGroup(Identifier id) {
+public class CozyCampingItemGroup extends TabbedItemGroup {
+    private ItemConvertible iconItem;
+
+    public CozyCampingItemGroup(Identifier id, Function<CozyCampingItemGroup, ItemGroup> builder) {
         super(id);
+        builder.apply(this);
+    }
+
+    public void addTab(ItemConvertible iconItem, String name, Set<Item> itemSet) {
+        this.registerTab(iconItem, name, itemSet);
+    }
+
+    public void setIcon(ItemConvertible iconItem) {
+        this.iconItem = iconItem;
     }
 
     @Override
     public ItemStack createIcon() {
-        return new ItemStack(BlockRegistry.CHARCOAL_BLOCK);
+        return new ItemStack(iconItem);
     }
 }
