@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "modid",
+  "id": "cozy_camping",
   "version": "${version}",
 
   "name": "Example Mod",
@@ -13,17 +13,17 @@
     "sources": "https://github.com/FabricMC/fabric-example-mod"
   },
 
-  "license": "CC0-1.0",
-  "icon": "assets/modid/icon.png",
+  "license": "GPL 3.0",
+  "icon": "assets/cozy_camping/icon.png",
 
   "environment": "*",
   "entrypoints": {
     "main": [
-      "net.fabricmc.example.ExampleMod"
+      "net.kings_of_devs.cozy_camping.CozyCampingMain"
     ]
   },
   "mixins": [
-    "modid.mixins.json"
+    "cozy_camping.mixins.json"
   ],
 
   "depends": {
