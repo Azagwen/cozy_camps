@@ -7,7 +7,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 
 public class BlockRegistry {
-
     public static final Block TEST_BLOCK = new Block(FabricBlockSettings.copyOf(Blocks.STONE));
     public static final Block CHARCOAL_BLOCK = new Block(FabricBlockSettings.copyOf(Blocks.COAL_BLOCK).requiresTool().breakByTool(FabricToolTags.PICKAXES));
 

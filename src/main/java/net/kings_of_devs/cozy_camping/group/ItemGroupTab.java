@@ -6,14 +6,14 @@ import net.minecraft.item.ItemStack;
 
 import java.util.Set;
 
-public record ItemGroupTab(ItemStack icon, String name, Set<Item> itemTag) {
+public record ItemGroupTab(ItemStack icon, String name, Set<Item> itemSet) {
 
     public ItemStack getIcon() {
         return icon;
     }
 
     public boolean matches(Item item) {
-        return itemTag == null || itemTag.contains(item);
+        return itemSet == null || itemSet.contains(item);
     }
 
     public boolean matches(ItemStack stack) {

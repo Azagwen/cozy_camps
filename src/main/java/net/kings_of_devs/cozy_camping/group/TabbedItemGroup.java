@@ -2,7 +2,10 @@ package net.kings_of_devs.cozy_camping.group;
 
 import com.google.common.collect.Lists;
 import net.fabricmc.fabric.impl.item.group.ItemGroupExtensions;
+import net.kings_of_devs.cozy_camping.CozyCampingMain;
+import net.kings_of_devs.cozy_camping.block.BlockRegistry;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
@@ -10,9 +13,9 @@ import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.registry.Registry;
 
 import java.util.List;
+import java.util.Set;
 
 public abstract class TabbedItemGroup extends ItemGroup {
-
     private int selectedTab = 0;
     private final List<ItemGroupTab> tabs = Lists.newArrayList();
     private boolean hasInitialized = false;
@@ -23,10 +26,13 @@ public abstract class TabbedItemGroup extends ItemGroup {
 
     public void initialize() {
         hasInitialized = true;
-        initTabs(tabs);
     }
 
-    protected abstract void initTabs(List<ItemGroupTab> tabs);
+    protected ItemGroupTab registerTab(ItemConvertible item, String name, Set<Item> itemSet) {
+        var tab = new ItemGroupTab(new ItemStack(item), name, itemSet);
+        this.tabs.add(tab);
+        return tab;
+    };
 
     @Override
     public void appendStacks(DefaultedList<ItemStack> stacks) {

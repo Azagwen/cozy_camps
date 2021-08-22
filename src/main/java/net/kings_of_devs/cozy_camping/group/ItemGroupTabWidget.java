@@ -32,7 +32,7 @@ public class ItemGroupTabWidget extends ButtonWidget {
 
     @Override
     public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float delta) {
-        MinecraftClient minecraftClient = MinecraftClient.getInstance();
+        var client = MinecraftClient.getInstance();
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, TEXTURE);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
@@ -41,8 +41,8 @@ public class ItemGroupTabWidget extends ButtonWidget {
         RenderSystem.defaultBlendFunc();
         RenderSystem.enableDepthTest();
         this.drawTexture(matrixStack, this.x, this.y, xOffset * width + (flipped ? width * 3 : 0), 28, this.width, this.height);
-        this.renderBackground(matrixStack, minecraftClient, mouseX, mouseY);
+        this.renderBackground(matrixStack, client, mouseX, mouseY);
         int xIconOffset = flipped ? (this.isHovered() || isSelected ? 10 : 7) : (this.isHovered() || isSelected ? 7 : 10);
-        minecraftClient.getItemRenderer().renderGuiItemIcon(tab.getIcon(), this.x + xIconOffset, this.y + 6);
+        client.getItemRenderer().renderGuiItemIcon(tab.getIcon(), this.x + xIconOffset, this.y + 6);
     }
 }

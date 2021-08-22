@@ -1,0 +1,10 @@
+{
+  "language.name": "English",
+  "language.region": "United States",
+  "language.code": "en_us",
+
+  "block.cozy_camping.charcoal_block": "Block of Charcoal",
+  "itemGroup.subTab.cozy_camping.blocks": "Building Blocks",
+  "itemGroup.subTab.cozy_camping.misc": "Miscellaneous",
+  "itemGroup.cozy_camping.cozy_camping": "Cozy Camping"
+}

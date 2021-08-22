@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/leaves",
+  "textures": {
+    "all": "cozy_camping:block/charcoal_block"
+  }
+}
