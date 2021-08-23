@@ -1,0 +1,28 @@
+{
+    "display": {
+        "title": {
+            "text": "Cozy Camping"
+        },
+        "description": {
+            "text": "Play with the Cozy Camping Mod installed"
+        },
+        "icon": {
+            "item": "minecraft:debug_stick"
+        },
+        "frame": "goal",
+        "show_toast": true,
+        "announce_to_chat": true,
+        "hidden": false,
+        "background": "cozy_camping:textures/block/charcoal_block.png"
+    },
+    "criteria": {
+        "start": {
+            "trigger": "minecraft:tick"
+        }
+    },
+    "requirements": [
+        [
+            "start"
+        ]
+    ]
+}

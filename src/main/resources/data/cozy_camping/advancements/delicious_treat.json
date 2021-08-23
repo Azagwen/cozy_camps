@@ -1,0 +1,37 @@
+{
+    "display": {
+        "title": {
+            "text": "Delicious Treat"
+        },
+        "description": {
+            "text": "Get your hands on a Marshmallow on a Stick"
+        },
+        "icon": {
+            "item": "cozy_camping:marshmallow_on_a_stick"
+        },
+        "frame": "task",
+        "show_toast": true,
+        "announce_to_chat": true,
+        "hidden": false
+    },
+    "criteria": {
+        "getMe": {
+            "trigger": "minecraft:inventory_changed",
+            "conditions": {
+                "items": [
+                    {
+                        "items": [
+                            "cozy_camping:marshmallow_on_a_stick"
+                        ]
+                    }
+                ]
+            }
+        }
+    },
+    "requirements": [
+        [
+            "getMe"
+        ]
+    ],
+    "parent": "cozy_camping:root"
+}

@@ -1,0 +1,37 @@
+{
+    "display": {
+        "title": {
+            "text": "Sticky Treasure"
+        },
+        "description": {
+            "text": "Roast a Marshmallow on a Stick"
+        },
+        "icon": {
+            "item": "cozy_camping:roasted_marshmallow_on_a_stick"
+        },
+        "frame": "task",
+        "show_toast": true,
+        "announce_to_chat": true,
+        "hidden": false
+    },
+    "criteria": {
+        "roastMarshmallow": {
+            "trigger": "minecraft:inventory_changed",
+            "conditions": {
+                "items": [
+                    {
+                        "items": [
+                            "cozy_camping:roasted_marshmallow_on_a_stick"
+                        ]
+                    }
+                ]
+            }
+        }
+    },
+    "requirements": [
+        [
+            "roastMarshmallow"
+        ]
+    ],
+    "parent": "cozy_camping:delicious_treat"
+}
