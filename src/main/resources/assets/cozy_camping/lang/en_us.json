@@ -4,7 +4,17 @@
   "language.code": "en_us",
 
   "block.cozy_camping.charcoal_block": "Block of Charcoal",
+
+  "item.cozy_camping.marshmallow": "Marshmallow",
+  "item.cozy_camping.roasted_marshmallow": "Roasted Marshmallow",
+  "item.cozy_camping.marshmallow_on_a_stick": "Marshmallow on a Stick",
+  "item.cozy_camping.roasted_marshmallow_on_a_stick": "Roasted Marshmallow on a Stick",
+  "item.cozy_camping.burned_stick": "Burned Stick",
+
   "itemGroup.subTab.cozy_camping.blocks": "Building Blocks",
   "itemGroup.subTab.cozy_camping.misc": "Miscellaneous",
-  "itemGroup.cozy_camping.cozy_camping": "Cozy Camping"
+  "itemGroup.cozy_camping.cozy_camping": "Cozy Camping",
+
+  "advancements.cozy_camping.root.title": "Cozy Camping",
+  "advancements.cozy_camping.root.description": "Advancements for the Cozy Camping Mod"
 }

@@ -4,6 +4,7 @@ import com.google.common.collect.Sets;
 import net.fabricmc.api.ModInitializer;
 import net.kings_of_devs.cozy_camping.block.BlockRegistry;
 import net.kings_of_devs.cozy_camping.group.CozyCampingItemGroup;
+import net.kings_of_devs.cozy_camping.item.ItemRegistry;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
@@ -31,6 +32,7 @@ public class CozyCampingMain implements ModInitializer {
 		});
 
 		BlockRegistry.init();
+		ItemRegistry.init();
 
 		System.out.println("Hello Fabric world!");
 	}
