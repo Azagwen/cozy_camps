@@ -4,9 +4,9 @@ import com.google.common.collect.Lists;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.kings_of_devs.cozy_camping.CozyCampingMain;
-import net.kings_of_devs.cozy_camping.group.CozyCampingItemGroup;
-import net.kings_of_devs.cozy_camping.group.ItemGroupTabWidget;
 import net.kings_of_devs.cozy_camping.group.TabbedItemGroup;
+import net.kings_of_devs.cozy_camping.group.ItemGroupTabWidget;
+import net.kings_of_devs.cozy_camping.group.AbstractTabbedItemGroup;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ConfirmChatLinkScreen;
 import net.minecraft.client.gui.screen.ingame.AbstractInventoryScreen;
@@ -48,7 +48,7 @@ public abstract class CreativeInventoryScreenMixin extends AbstractInventoryScre
         this.tabButtons.clear();
         this.mediaButtons.clear();
 
-        if(group instanceof TabbedItemGroup tabbedGroup) {
+        if(group instanceof AbstractTabbedItemGroup tabbedGroup) {
             if(!tabbedGroup.hasInitialized()) {
                 tabbedGroup.initialize();
             }
@@ -77,7 +77,7 @@ public abstract class CreativeInventoryScreenMixin extends AbstractInventoryScre
             }
         }
 
-        if(group instanceof CozyCampingItemGroup && this.enableMediaButtons) {
+        if(group instanceof TabbedItemGroup && this.enableMediaButtons) {
             var curseforgeButton = new TexturedButtonWidget(this.x + 175, this.y + 4, 12, 12, 24, 0, 12, MEDIA_ICON_TEXTURE, 64, 64, (button) -> {
                 this.client.openScreen(new ConfirmChatLinkScreen((opened) -> {
                     if (opened) {

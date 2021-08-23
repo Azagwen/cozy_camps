@@ -11,10 +11,10 @@ public class ItemRegistryUtil {
     /**
      * Registers a {@link Item}.
      *
-     * @param path      A String representing the name of the block, the "path".
-     * @param item      The {@link Item} Object corresponding to the Block you want to register.
+     * @param path      A String representing the name of the Item, the "path".
+     * @param item      The {@link Item} object you want to register.
      */
-    protected static <I extends Item> void registerItem(Set<Item> itemGroupTab, String path, I item) {
+    protected static void registerItem(Set<Item> itemGroupTab, String path, Item item) {
         var id = CozyCampingMain.id(path);
         Registry.register(Registry.ITEM, id, item);
         itemGroupTab.add(item);

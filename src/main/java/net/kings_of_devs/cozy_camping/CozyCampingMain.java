@@ -2,19 +2,21 @@ package net.kings_of_devs.cozy_camping;
 
 import com.google.common.collect.Sets;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.kings_of_devs.cozy_camping.block.BlockRegistry;
-import net.kings_of_devs.cozy_camping.group.CozyCampingItemGroup;
+import net.kings_of_devs.cozy_camping.group.TabbedItemGroup;
 import net.kings_of_devs.cozy_camping.item.ItemRegistry;
-import net.minecraft.block.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
 
 import java.util.Set;
+import java.util.logging.Logger;
 
 public class CozyCampingMain implements ModInitializer {
+	public static final Logger LOGGER = Logger.getLogger("Cozy Camping");
 	public static final String MOD_ID = "cozy_camping";
 
-	public static CozyCampingItemGroup GROUP;
+	public static TabbedItemGroup GROUP;
 	public static Set<Item> BLOCKS_TAB = Sets.newHashSet();
 	public static Set<Item> MISC_TAB = Sets.newHashSet();
 
@@ -24,16 +26,19 @@ public class CozyCampingMain implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		GROUP = new CozyCampingItemGroup(id(MOD_ID), (itemGroup) -> {
+		GROUP = new TabbedItemGroup(id(MOD_ID), (itemGroup) -> {
 			itemGroup.setIcon(BlockRegistry.CHARCOAL_BLOCK);
-			itemGroup.addTab(Blocks.BEDROCK, "blocks", BLOCKS_TAB);
-			itemGroup.addTab(Blocks.BEDROCK, "misc", MISC_TAB);
+			itemGroup.addTab(BlockRegistry.CHARCOAL_BLOCK, "blocks", BLOCKS_TAB);
+			itemGroup.addTab(ItemRegistry.MARSHMALLOW_ON_A_STICK, "misc", MISC_TAB);
 			return itemGroup;
 		});
 
 		BlockRegistry.init();
 		ItemRegistry.init();
 
-		System.out.println("Hello Fabric world!");
+		//this makes the charcoal block be a fuel, with the same duration as a normal coal block.
+		FuelRegistry.INSTANCE.add(BlockRegistry.CHARCOAL_BLOCK, 16000);
+
+		LOGGER.info("Cozy Camping Registered!");
 	}
 }

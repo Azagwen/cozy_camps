@@ -17,6 +17,7 @@ public class BlockRegistryUtil {
      * @param block     The {@link Block} object you want to register.
      * @param item      The {@link Item} Object corresponding to the Block you want to register.
      * @param <B>       The Type of the said Block (implicit most of the time).
+     * @param <I>       The Type of the said Block's Item (implicit most of the time).
      */
     protected static <B extends Block, I extends Item> void registerBlock(Set<Item> itemGroupTab, String path, B block, I item) {
         var id = CozyCampingMain.id(path);
