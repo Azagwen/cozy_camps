@@ -19,6 +19,6 @@ public class ItemRegistry {
         ItemRegistryUtil.registerItem(CozyCampingMain.MISC_TAB, "roasted_marshmallow_on_a_stick", ROASTED_MARSHMALLOW_ON_A_STICK);
         ItemRegistryUtil.registerItem(CozyCampingMain.MISC_TAB, "burned_stick", BURNED_STICK);
 
-        CozyCampingMain.LOGGER.info("Cozy Camping Blocks Registered!");
+        CozyCampingMain.LOGGER.info("Cozy Camping Items Registered!");
     }
 }

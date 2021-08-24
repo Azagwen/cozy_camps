@@ -6,6 +6,8 @@ import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.kings_of_devs.cozy_camping.block.BlockRegistry;
 import net.kings_of_devs.cozy_camping.group.TabbedItemGroup;
 import net.kings_of_devs.cozy_camping.item.ItemRegistry;
+import net.kings_of_devs.cozy_camping.villager.Camper;
+import net.kings_of_devs.cozy_camping.villager.CamperPOI;
 import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
 
@@ -35,6 +37,8 @@ public class CozyCampingMain implements ModInitializer {
 
 		BlockRegistry.init();
 		ItemRegistry.init();
+		CamperPOI.init();
+		Camper.init();
 
 		//this makes the charcoal block be a fuel, with the same duration as a normal coal block.
 		FuelRegistry.INSTANCE.add(BlockRegistry.CHARCOAL_BLOCK, 16000);

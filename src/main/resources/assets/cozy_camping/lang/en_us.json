@@ -16,5 +16,7 @@
   "itemGroup.cozy_camping.cozy_camping": "Cozy Camping",
 
   "advancements.cozy_camping.root.title": "Cozy Camping",
-  "advancements.cozy_camping.root.description": "Advancements for the Cozy Camping Mod"
+  "advancements.cozy_camping.root.description": "Advancements for the Cozy Camping Mod",
+
+  "entity.minecraft.villager.camper": "Camper"
 }
