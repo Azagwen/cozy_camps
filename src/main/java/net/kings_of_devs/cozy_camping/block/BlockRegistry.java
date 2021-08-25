@@ -15,7 +15,10 @@ public class BlockRegistry {
     public static final Block DARK_OAK_STUMP = new StumpBlock(FabricBlockSettings.copyOf(Blocks.DARK_OAK_PLANKS).breakByTool(FabricToolTags.AXES));
     public static final Block CRIMSON_STUMP = new StumpBlock(FabricBlockSettings.copyOf(Blocks.CRIMSON_PLANKS).breakByTool(FabricToolTags.AXES));
     public static final Block WARPED_STUMP = new StumpBlock(FabricBlockSettings.copyOf(Blocks.WARPED_PLANKS).breakByTool(FabricToolTags.AXES));
+
     public static final Block CHARCOAL_BLOCK = new Block(FabricBlockSettings.copyOf(Blocks.COAL_BLOCK).requiresTool().breakByTool(FabricToolTags.PICKAXES));
+
+    public static final Block OPEN_TRAP = new TrapBlock(FabricBlockSettings.copyOf(Blocks.IRON_BLOCK).requiresTool().breakByTool(FabricToolTags.PICKAXES));
 
     public static void init() {
         BlockRegistryUtil.registerBlock(CozyCampingMain.BLOCKS_TAB, "oak_stump", OAK_STUMP);
@@ -26,7 +29,10 @@ public class BlockRegistry {
         BlockRegistryUtil.registerBlock(CozyCampingMain.BLOCKS_TAB, "dark_oak_stump", DARK_OAK_STUMP);
         BlockRegistryUtil.registerBlock(CozyCampingMain.BLOCKS_TAB, "crimson_stump", CRIMSON_STUMP);
         BlockRegistryUtil.registerBlock(CozyCampingMain.BLOCKS_TAB, "warped_stump", WARPED_STUMP);
+
         BlockRegistryUtil.registerBlock(CozyCampingMain.BLOCKS_TAB, "charcoal_block", CHARCOAL_BLOCK);
+
+        BlockRegistryUtil.registerBlock(CozyCampingMain.BLOCKS_TAB, "bear_trap", OPEN_TRAP);
 
         CozyCampingMain.LOGGER.info("Cozy Camping Blocks Registered!");
     }
