@@ -5,6 +5,8 @@ import net.fabricmc.fabric.mixin.object.builder.VillagerProfessionAccessor;
 import net.kings_of_devs.cozy_camping.CozyCampingMain;
 import net.kings_of_devs.cozy_camping.item.ItemRegistry;
 import net.minecraft.block.Block;
+import net.minecraft.client.render.entity.VillagerEntityRenderer;
+import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
