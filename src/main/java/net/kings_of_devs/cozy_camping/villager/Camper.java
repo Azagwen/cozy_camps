@@ -25,8 +25,9 @@ public class Camper {
         Registry.register(Registry.VILLAGER_PROFESSION, "camper", CAMPER);
 
         //****EXAMPLE TRADES****
-        //This one creates a simple trade (4 emeralds -> 1 Marshmallow).
+        //This one creates a simple trade (4 emeralds -> 1 Marshmallow). (10 emeralds -> 1 Walking Stick).
         CamperTrade.SimpleTrade(1, Items.EMERALD, 4, ItemRegistry.MARSHMALLOW, 1, 12, 2,0.2f);
+        CamperTrade.SimpleTrade(1, Items.EMERALD, 10, ItemRegistry.WALKING_STICK, 1, 12, 2,0.2f);
         //This one creates a complex trade (3 emeralds + 1 stick -> 1 Marshmallow on a Stick).
         CamperTrade.ComplexTrade(2, new ItemStack(Items.EMERALD, 3), new ItemStack(Items.STICK, 1), ItemRegistry.MARSHMALLOW_ON_A_STICK, 1, 12, 2, 0.2f);
         //**********************

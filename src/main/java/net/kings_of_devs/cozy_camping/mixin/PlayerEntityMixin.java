@@ -25,7 +25,7 @@ public abstract class PlayerEntityMixin {
     }
 
     private float getSpeed(float input) {
-        return self.getMainHandStack().isOf(ItemRegistry.WALKING_STICK) ? (input * 3) : input;
+        return self.getMainHandStack().isOf(ItemRegistry.WALKING_STICK) ? (input * 1.4f) : input;
     }
 
     private float getSpeed() {
