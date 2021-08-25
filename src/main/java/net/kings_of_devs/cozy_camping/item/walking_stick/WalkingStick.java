@@ -22,7 +22,7 @@ public class WalkingStick extends Item {
     public WalkingStick(Settings settings) {
         super(settings);
     }
-
+    //Ye
     /* SCRAP
     @Override
     public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
