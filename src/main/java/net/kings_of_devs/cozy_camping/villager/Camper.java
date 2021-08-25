@@ -6,6 +6,9 @@ import net.kings_of_devs.cozy_camping.CozyCampingMain;
 import net.kings_of_devs.cozy_camping.item.ItemRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.client.render.entity.VillagerEntityRenderer;
+import net.minecraft.client.render.entity.feature.VillagerClothingFeatureRenderer;
+import net.minecraft.client.render.entity.feature.VillagerResourceMetadata;
+import net.minecraft.client.render.entity.feature.VillagerResourceMetadataReader;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -27,7 +30,6 @@ public class Camper {
         //This one creates a complex trade (3 emeralds + 1 stick -> 1 Marshmallow on a Stick).
         CamperTrade.ComplexTrade(2, new ItemStack(Items.EMERALD, 3), new ItemStack(Items.STICK, 1), ItemRegistry.MARSHMALLOW_ON_A_STICK, 1, 12, 2, 0.2f);
         //**********************
-
 
         CozyCampingMain.LOGGER.info("Camper Profession Registered!");
     }

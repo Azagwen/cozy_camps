@@ -8,6 +8,7 @@ import net.kings_of_devs.cozy_camping.group.TabbedItemGroup;
 import net.kings_of_devs.cozy_camping.item.ItemRegistry;
 import net.kings_of_devs.cozy_camping.villager.Camper;
 import net.kings_of_devs.cozy_camping.villager.CamperPOI;
+import net.minecraft.block.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
 
@@ -29,8 +30,8 @@ public class CozyCampingMain implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		GROUP = new TabbedItemGroup(id(MOD_ID), (itemGroup) -> {
-			itemGroup.setIcon(BlockRegistry.CHARCOAL_BLOCK);
-			itemGroup.addTab(BlockRegistry.CHARCOAL_BLOCK, "blocks", BLOCKS_TAB);
+			itemGroup.setIcon(ItemRegistry.MARSHMALLOW_ON_A_STICK);
+			itemGroup.addTab(Blocks.BEDROCK, "blocks", BLOCKS_TAB);
 			itemGroup.addTab(ItemRegistry.MARSHMALLOW_ON_A_STICK, "misc", MISC_TAB);
 			return itemGroup;
 		});
