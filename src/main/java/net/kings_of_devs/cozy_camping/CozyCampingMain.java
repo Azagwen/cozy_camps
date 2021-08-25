@@ -11,12 +11,13 @@ import net.kings_of_devs.cozy_camping.villager.CamperPOI;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Set;
-import java.util.logging.Logger;
 
 public class CozyCampingMain implements ModInitializer {
-	public static final Logger LOGGER = Logger.getLogger("Cozy Camping");
+	public static final Logger LOGGER = LogManager.getLogger("Cozy Camping");
 	public static final String MOD_ID = "cozy_camping";
 
 	public static TabbedItemGroup GROUP;

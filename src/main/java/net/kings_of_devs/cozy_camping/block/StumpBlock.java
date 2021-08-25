@@ -1,17 +1,14 @@
 package net.kings_of_devs.cozy_camping.block;
 
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
+import com.google.common.collect.Maps;
 import net.kings_of_devs.cozy_camping.block.state.CozyCampProperties;
-import net.kings_of_devs.cozy_camping.block.state.StumpAxis;
-import net.kings_of_devs.cozy_camping.block.state.StumpSide;
+import net.kings_of_devs.cozy_camping.block.state.StumpShape;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.EnumProperty;
-import net.minecraft.util.function.BooleanBiFunction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
@@ -19,100 +16,83 @@ import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.WorldAccess;
 
+import java.util.Map;
+
 public class StumpBlock extends Block {
-    public static final EnumProperty<StumpAxis> AXIS;
-    public static final EnumProperty<StumpSide> SIDE;
-    private static final VoxelShape VERTICAL_SHAPE;
-    private static final VoxelShape Z_POSITIVE;
-    private static final VoxelShape Z_NEGATIVE;
-    private static final VoxelShape Z_CENTERED;
-    private static final VoxelShape Z_CENTERED_LARGE;
-    private static final VoxelShape X_POSITIVE;
-    private static final VoxelShape X_NEGATIVE;
-    private static final VoxelShape X_CENTERED;
-    private static final VoxelShape X_CENTERED_LARGE;
-    private static final Table<StumpAxis, StumpSide, VoxelShape> SHAPE_TABLE;
+    public static final EnumProperty<StumpShape> SHAPE;
+    private static final Map<StumpShape, VoxelShape> SHAPE_MAP;
 
     public StumpBlock(Settings settings) {
         super(settings);
+        this.setDefaultState(this.getStateManager().getDefaultState().with(SHAPE, StumpShape.VERTICAL));
     }
 
     @Override
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-        return SHAPE_TABLE.get(state.get(AXIS), state.get(SIDE));
+        var shape = SHAPE_MAP.get(state.get(SHAPE));
+        return shape != null ? shape : VoxelShapes.empty();
     }
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        builder.add(AXIS, SIDE);
+        builder.add(SHAPE);
     }
 
     @Override
     public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState neighborState, WorldAccess world, BlockPos pos, BlockPos neighborPos) {
-        return this.getPlacementState(world, pos, direction);
+        var newState = this.getPlacementState(state, world, pos, direction);
+        if (neighborState.getBlock() instanceof StumpBlock && newState.get(SHAPE).getAxis() == neighborState.get(SHAPE).getAxis()) {
+            if (direction.getAxis() == state.get(SHAPE).getAxis()) {
+                return newState;
+            }
+        }
+        if (direction.getAxis() == state.get(SHAPE).getAxis() && (neighborState.getBlock() instanceof StumpBlock && direction.getAxis() == neighborState.get(SHAPE).getAxis())) {
+            return newState;
+        }
+        return super.getStateForNeighborUpdate(state, direction, neighborState, world, pos, neighborPos);
     }
 
     @Override
     public BlockState getPlacementState(ItemPlacementContext ctx) {
-        return this.getPlacementState(ctx.getWorld(), ctx.getBlockPos(), ctx.getSide());
+        return this.getPlacementState(this.getDefaultState(), ctx.getWorld(), ctx.getBlockPos(), ctx.getSide());
     }
 
-    private BlockState getPlacementState(WorldAccess world, BlockPos pos, Direction direction) {
-        var connectsOnPosX = world.getBlockState(pos.offset(Direction.get(Direction.AxisDirection.POSITIVE, Direction.Axis.X))).getBlock() instanceof StumpBlock;
-        var connectsOnNegX = world.getBlockState(pos.offset(Direction.get(Direction.AxisDirection.NEGATIVE, Direction.Axis.X))).getBlock() instanceof StumpBlock;
-        var connectsOnPosZ = world.getBlockState(pos.offset(Direction.get(Direction.AxisDirection.POSITIVE, Direction.Axis.Z))).getBlock() instanceof StumpBlock;
-        var connectsOnNegZ = world.getBlockState(pos.offset(Direction.get(Direction.AxisDirection.NEGATIVE, Direction.Axis.Z))).getBlock() instanceof StumpBlock;
-        var axis = StumpAxis.VERTICAL;
-        var side = StumpSide.CENTERED;
+    private BlockState getPlacementState(BlockState state, WorldAccess world, BlockPos pos, Direction direction) {
+        var axis = direction.getAxis();
+        var positiveDir = Direction.get(Direction.AxisDirection.POSITIVE, axis);
+        var negativeDir = Direction.get(Direction.AxisDirection.NEGATIVE, axis);
+        var connectsOnPos = world.getBlockState(pos.offset(positiveDir)).getBlock() instanceof StumpBlock;
+        var connectsOnNeg = world.getBlockState(pos.offset(negativeDir)).getBlock() instanceof StumpBlock;
+        var side = this.determineSide(state, axis, connectsOnPos, connectsOnNeg);
 
-        switch (direction.getAxis()) {
-            case X -> {
-                axis = StumpAxis.X;
-                side = this.determineSide(connectsOnPosX, connectsOnNegX);
-            }
-            case Z -> {
-                axis = StumpAxis.Z;
-                side = this.determineSide(connectsOnPosZ, connectsOnNegZ);
-            }
+        return this.getDefaultState().with(SHAPE, side);
+    }
+
+    private StumpShape determineSide(BlockState state, Direction.Axis axis, boolean hasPositive, boolean hasNegative) {
+        var checkNegative = (hasNegative ? StumpShape.NEGATIVE : StumpShape.CENTER);
+        var checkPositive = (hasPositive ? StumpShape.POSITIVE : checkNegative);
+        var side = (hasPositive && hasNegative ? StumpShape.CENTER_LARGE : checkPositive);
+
+        switch (axis) {
+            case X -> side = side * StumpShape.X_MULTIPLIER;
+            case Z -> side = side * StumpShape.Z_MULTIPLIER;
         }
 
-        return this.getDefaultState().with(AXIS, axis).with(SIDE, side);
-    }
-
-    private StumpSide determineSide(boolean hasPositive, boolean hasNegative) {
-        if (hasPositive && hasNegative)
-            return StumpSide.CENTERED_LARGE;
-        else if (hasPositive)
-            return StumpSide.POSITIVE;
-        else if (hasNegative)
-            return StumpSide.NEGATIVE;
-        else
-            return StumpSide.CENTERED;
+        return StumpShape.SHAPE_MAP.get(side) != null ? StumpShape.SHAPE_MAP.get(side) : state.get(SHAPE);
     }
 
     static {
-        AXIS = CozyCampProperties.STUMP_AXIS;
-        SIDE = CozyCampProperties.STUMP_SIDE;
+        SHAPE = CozyCampProperties.STUMP_SIDE;
 
-        VERTICAL_SHAPE = Block.createCuboidShape(3D, 0D, 3D, 13D, 12D, 13D);
-        Z_POSITIVE = Block.createCuboidShape(3D, 0D, 0D, 13D, 10D, 12D);
-        Z_NEGATIVE = Block.createCuboidShape(3D, 0D, 4D, 13D, 10D, 16D);
-        Z_CENTERED = VoxelShapes.union(Z_POSITIVE, Z_NEGATIVE);
-        Z_CENTERED_LARGE = VoxelShapes.combine(Z_POSITIVE, Z_NEGATIVE, BooleanBiFunction.AND);
-        X_POSITIVE = Block.createCuboidShape(0D, 0D, 3D, 12D, 10D, 13D);
-        X_NEGATIVE = Block.createCuboidShape(4D, 0D, 3D, 16D, 10D, 13D);
-        X_CENTERED = VoxelShapes.union(X_POSITIVE, X_NEGATIVE);
-        X_CENTERED_LARGE = VoxelShapes.combine(X_POSITIVE, X_NEGATIVE, BooleanBiFunction.AND);
-
-        SHAPE_TABLE = HashBasedTable.create();
-        SHAPE_TABLE.put(StumpAxis.X, StumpSide.CENTERED, X_CENTERED);
-        SHAPE_TABLE.put(StumpAxis.X, StumpSide.CENTERED_LARGE, X_CENTERED_LARGE);
-        SHAPE_TABLE.put(StumpAxis.X, StumpSide.POSITIVE, X_POSITIVE);
-        SHAPE_TABLE.put(StumpAxis.X, StumpSide.NEGATIVE, X_NEGATIVE);
-        SHAPE_TABLE.put(StumpAxis.VERTICAL, StumpSide.CENTERED, VERTICAL_SHAPE);
-        SHAPE_TABLE.put(StumpAxis.Z, StumpSide.CENTERED, Z_CENTERED);
-        SHAPE_TABLE.put(StumpAxis.Z, StumpSide.CENTERED_LARGE, Z_CENTERED_LARGE);
-        SHAPE_TABLE.put(StumpAxis.Z, StumpSide.POSITIVE, Z_POSITIVE);
-        SHAPE_TABLE.put(StumpAxis.Z, StumpSide.NEGATIVE, Z_NEGATIVE);
+        SHAPE_MAP = Maps.newHashMap();
+        SHAPE_MAP.put(StumpShape.VERTICAL, Block.createCuboidShape(3D, 0D, 3D, 13D, 12D, 13D));
+        SHAPE_MAP.put(StumpShape.X_POSITIVE, Block.createCuboidShape(4D, 0D, 3D, 16D, 10D, 13D));
+        SHAPE_MAP.put(StumpShape.X_NEGATIVE, Block.createCuboidShape(0D, 0D, 3D, 12D, 10D, 13D));
+        SHAPE_MAP.put(StumpShape.X_CENTERED, Block.createCuboidShape(2D, 0D, 3D, 14D, 10D, 13D));
+        SHAPE_MAP.put(StumpShape.X_CENTERED_LARGE, VoxelShapes.union(SHAPE_MAP.get(StumpShape.X_POSITIVE), SHAPE_MAP.get(StumpShape.X_NEGATIVE)));
+        SHAPE_MAP.put(StumpShape.Z_POSITIVE, Block.createCuboidShape(3D, 0D, 4D, 13D, 10D, 16D));
+        SHAPE_MAP.put(StumpShape.Z_NEGATIVE, Block.createCuboidShape(3D, 0D, 0D, 13D, 10D, 12D));
+        SHAPE_MAP.put(StumpShape.Z_CENTERED, Block.createCuboidShape(3D, 0D, 2D, 13D, 10D, 14D));
+        SHAPE_MAP.put(StumpShape.Z_CENTERED_LARGE, VoxelShapes.union(SHAPE_MAP.get(StumpShape.Z_POSITIVE), SHAPE_MAP.get(StumpShape.Z_NEGATIVE)));
     }
 }

@@ -1,0 +1,7 @@
+{
+    "parent": "cozy_camping:block/template_stump_centered_large",
+    "textures": {
+        "side": "minecraft:block/oak_log",
+        "top": "minecraft:block/oak_log_top"
+    }
+}
