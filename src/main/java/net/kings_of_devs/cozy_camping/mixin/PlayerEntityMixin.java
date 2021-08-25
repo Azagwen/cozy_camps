@@ -14,21 +14,17 @@ public abstract class PlayerEntityMixin {
     private final PlayerEntity self = (PlayerEntity) (Object) this;
 
     @ModifyArg(method = "tickMovement", at =
-    @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;setMovementSpeed(F)V", args = {"log=true"}), index = 0)
-    private float modifyMovementSpeed(float in) {
-        return this.getSpeed(in);
+    @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;setMovementSpeed(F)V", args = {"log=false"}), index = 0)
+    private float modifyMovementSpeed(float input) {
+        return this.getSpeed(input);
     }
 
     @Inject(method = "getMovementSpeed", at = @At("HEAD"), cancellable = true)
     private void getMovementSpeed(CallbackInfoReturnable<Float> cir) {
-        cir.setReturnValue(this.getSpeed());
+        cir.setReturnValue(this.getSpeed((float) self.getAttributeValue(EntityAttributes.GENERIC_MOVEMENT_SPEED)));
     }
 
     private float getSpeed(float input) {
-        return self.getMainHandStack().isOf(ItemRegistry.WALKING_STICK) ? (input * 1.4f) : input;
-    }
-
-    private float getSpeed() {
-        return this.getSpeed((float) self.getAttributeValue(EntityAttributes.GENERIC_MOVEMENT_SPEED));
+        return self.getMainHandStack().isOf(ItemRegistry.WALKING_STICK) ? (input * 1.4F) : input;
     }
 }
