@@ -29,9 +29,11 @@ public class BlockRegistry {
     public static final Block HEATHER = new HeatherBlock(FabricBlockSettings.copyOf(Blocks.GRASS));
 
     public static final Block STONE_BOULDER = new BoulderBlock(FabricBlockSettings.copyOf(Blocks.STONE).nonOpaque().requiresTool().breakByTool(FabricToolTags.PICKAXES));
-    public static final Block GRANITE_BOULDER = new BoulderBlock(FabricBlockSettings.copyOf(Blocks.STONE).nonOpaque().requiresTool().breakByTool(FabricToolTags.PICKAXES));
-    public static final Block DIORITE_BOULDER = new BoulderBlock(FabricBlockSettings.copyOf(Blocks.STONE).nonOpaque().requiresTool().breakByTool(FabricToolTags.PICKAXES));
-    public static final Block ANDESITE_BOULDER = new BoulderBlock(FabricBlockSettings.copyOf(Blocks.STONE).nonOpaque().requiresTool().breakByTool(FabricToolTags.PICKAXES));
+    public static final Block GRANITE_BOULDER = new BoulderBlock(FabricBlockSettings.copyOf(Blocks.GRANITE).nonOpaque().requiresTool().breakByTool(FabricToolTags.PICKAXES));
+    public static final Block DIORITE_BOULDER = new BoulderBlock(FabricBlockSettings.copyOf(Blocks.DIORITE).nonOpaque().requiresTool().breakByTool(FabricToolTags.PICKAXES));
+    public static final Block ANDESITE_BOULDER = new BoulderBlock(FabricBlockSettings.copyOf(Blocks.ANDESITE).nonOpaque().requiresTool().breakByTool(FabricToolTags.PICKAXES));
+    public static final Block COBBLESTONE_BOULDER = new BoulderBlock(FabricBlockSettings.copyOf(Blocks.COBBLESTONE).nonOpaque().requiresTool().breakByTool(FabricToolTags.PICKAXES));
+    public static final Block MOSSY_BOULDER = new BoulderBlock(FabricBlockSettings.copyOf(Blocks.MOSSY_COBBLESTONE).nonOpaque().requiresTool().breakByTool(FabricToolTags.PICKAXES));
 
     public static void init() {
         BlockRegistryUtil.registerBlock(CozyCampingMain.BLOCKS_TAB, "tent", TENT);
@@ -61,6 +63,8 @@ public class BlockRegistry {
         BlockRegistryUtil.registerBlock(CozyCampingMain.BLOCKS_TAB, "granite_boulder", GRANITE_BOULDER);
         BlockRegistryUtil.registerBlock(CozyCampingMain.BLOCKS_TAB, "diorite_boulder", DIORITE_BOULDER);
         BlockRegistryUtil.registerBlock(CozyCampingMain.BLOCKS_TAB, "andesite_boulder", ANDESITE_BOULDER);
+        BlockRegistryUtil.registerBlock(CozyCampingMain.BLOCKS_TAB, "cobblestone_boulder", COBBLESTONE_BOULDER);
+        BlockRegistryUtil.registerBlock(CozyCampingMain.BLOCKS_TAB, "mossy_cobblestone_boulder", MOSSY_BOULDER);
 
         CozyCampingMain.LOGGER.info("Cozy Camping Blocks Registered!");
     }
