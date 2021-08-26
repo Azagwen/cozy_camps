@@ -4,6 +4,11 @@
   "language.code": "en_us",
 
   "block.cozy_camping.charcoal_block": "Block of Charcoal",
+  "block.cozy_camping.bear_trap": "Bear Trap",
+  "block.cozy_camping.heather": "Heather",
+  "block.cozy_camping.tent": "Tent",
+  "block.cozy_camping.ripped_tent": "Ripped Tent",
+  "block.cozy_camping.fancy_tent": "Fancy Tent",
 
   "item.cozy_camping.marshmallow": "Marshmallow",
   "item.cozy_camping.roasted_marshmallow": "Roasted Marshmallow",

@@ -27,6 +27,17 @@ public class BlockRegistryUtil {
     }
 
     /**
+     *
+     * @param path      A String representing the name of the block, the "path".
+     * @param block     The {@link Block} object you want to register
+     * @param <B>       The Type of the said Block (implicit most of the time).
+     */
+    protected static <B extends Block> void registerBlockNoItem(String path, B block) {
+        var id = CozyCampingMain.id(path);
+        Registry.register(Registry.BLOCK, id, block);
+    }
+
+    /**
      * Registers a {@link Block} with a regular {@link BlockItem}.
      *
      * @param path      A String representing the name of the block, the "path".

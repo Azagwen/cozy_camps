@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "closed=false": { "model": "cozy_camping:block/bear_trap" },
+    "closed=true": { "model": "cozy_camping:block/bear_trap_closed" }
+  }
+}

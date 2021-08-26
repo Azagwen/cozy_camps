@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "cozy_camping:block/fancy_tent", "uvlock": true },
+    "facing=east":  { "model": "cozy_camping:block/fancy_tent", "y":  90, "uvlock": true },
+    "facing=south": { "model": "cozy_camping:block/fancy_tent", "y": 180, "uvlock": true },
+    "facing=west":  { "model": "cozy_camping:block/fancy_tent", "y": 270, "uvlock": true }
+  }
+}
