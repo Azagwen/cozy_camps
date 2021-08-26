@@ -1,0 +1,6 @@
+{
+  "parent": "item/handheld",
+  "textures": {
+    "layer0": "cozy_camping:item/ripped_tent"
+  }
+}
