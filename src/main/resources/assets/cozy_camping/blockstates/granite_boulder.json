@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "cozy_camping:block/granite_boulder", "uvlock": "true" },
+    "facing=east":  { "model": "cozy_camping:block/granite_boulder", "y":  90, "uvlock": "true" },
+    "facing=south": { "model": "cozy_camping:block/granite_boulder", "y": 180, "uvlock": "true" },
+    "facing=west":  { "model": "cozy_camping:block/granite_boulder", "y": 270, "uvlock": "true" }
+  }
+}

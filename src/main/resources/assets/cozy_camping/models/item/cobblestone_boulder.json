@@ -1,8 +1,8 @@
 {
 	"textures": {
-		"0": "block/diorite",
+		"0": "block/cobblestone",
 		"1": "block/stone",
-		"particle": "block/diorite"
+		"particle": "block/cobblestone"
 	},
 	"elements": [
 		{
