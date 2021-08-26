@@ -3,15 +3,16 @@
   "id": "cozy_camping",
   "version": "${version}",
 
-  "name": "Example Mod",
-  "description": "This is an example description! Tell everyone what your mod is about!",
+  "name": "Cozy Camping",
+  "description": "This Mod aims to add features to Minecraft centered around Camping!",
   "authors": [
-    "Me!"
+    "Azagwen",
+    "graydude",
+    "Herre_Keiser",
+    "RayoNocturo",
+    "Sajevius",
+    "ShroomyD"
   ],
-  "contact": {
-    "homepage": "https://fabricmc.net/",
-    "sources": "https://github.com/FabricMC/fabric-example-mod"
-  },
 
   "license": "GPL 3.0",
   "icon": "assets/cozy_camping/icon.png",
@@ -20,6 +21,9 @@
   "entrypoints": {
     "main": [
       "net.kings_of_devs.cozy_camping.CozyCampingMain"
+    ],
+    "client": [
+      "net.kings_of_devs.cozy_camping.client.CozyCampingClient"
     ]
   },
   "mixins": [

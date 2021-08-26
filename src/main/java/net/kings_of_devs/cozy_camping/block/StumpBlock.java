@@ -29,8 +29,7 @@ public class StumpBlock extends Block {
 
     @Override
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-        var shape = SHAPE_MAP.get(state.get(SHAPE));
-        return shape != null ? shape : VoxelShapes.empty();
+        return SHAPE_MAP.get(state.get(SHAPE));
     }
 
     @Override
@@ -76,7 +75,7 @@ public class StumpBlock extends Block {
     }
 
     static {
-        SHAPE = CozyCampProperties.STUMP_SIDE;
+        SHAPE = CozyCampProperties.STUMP_SHAPE;
 
         SHAPE_MAP = Maps.newHashMap();
         SHAPE_MAP.put(StumpShape.VERTICAL, Block.createCuboidShape(3D, 0D, 3D, 13D, 12D, 13D));

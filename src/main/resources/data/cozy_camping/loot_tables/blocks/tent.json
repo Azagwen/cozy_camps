@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1.0,
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "minecraft:block_state_property",
+              "block": "cozy_camping:tent",
+              "properties": {
+                "half": "lower",
+                "north": false,
+                "south": false,
+                "east": false,
+                "west": false
+              }
+            }
+          ],
+          "name": "cozy_camping:tent"
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ]
+    }
+  ]
+}
