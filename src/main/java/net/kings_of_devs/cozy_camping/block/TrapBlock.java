@@ -37,6 +37,7 @@ import net.minecraft.world.event.GameEvent;
 
 public class TrapBlock extends Block {
     public static final BooleanProperty CLOSED = BooleanProperty.of("closed");
+    public static final VoxelShape OUTLINE = VoxelShapes.cuboid(0f, 0f, 0f, 1f, 0.2f, 1f);
 
     public TrapBlock(Settings settings) {
         super(settings);
@@ -50,8 +51,7 @@ public class TrapBlock extends Block {
 
     @Override
     public VoxelShape getOutlineShape(BlockState state, BlockView view, BlockPos pos, ShapeContext context) {
-        //return state.get(CLOSED) ? VoxelShapes.fullCube() : VoxelShapes.cuboid(0f, 0f, 0f, 1f, 0.5f, 1f);
-        return VoxelShapes.cuboid(0f, 0f, 0f, 1f, 0.2f, 1f);
+        return OUTLINE;
     }
 
     @Override

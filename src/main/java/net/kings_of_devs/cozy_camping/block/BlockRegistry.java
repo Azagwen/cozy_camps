@@ -1,10 +1,11 @@
 package net.kings_of_devs.cozy_camping.block;
 
+import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.kings_of_devs.cozy_camping.CozyCampingMain;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
+import net.minecraft.block.*;
+import net.minecraft.client.render.RenderLayer;
 
 public class BlockRegistry {
     public static final Block OAK_STUMP = new StumpBlock(FabricBlockSettings.copyOf(Blocks.OAK_PLANKS).breakByTool(FabricToolTags.AXES));
@@ -20,6 +21,8 @@ public class BlockRegistry {
 
     public static final Block OPEN_TRAP = new TrapBlock(FabricBlockSettings.copyOf(Blocks.IRON_BLOCK).requiresTool().breakByTool(FabricToolTags.PICKAXES));
 
+    public static final Block HEATHER = new HeatherBlock(FabricBlockSettings.copyOf(Blocks.SWEET_BERRY_BUSH));
+
     public static void init() {
         BlockRegistryUtil.registerBlock(CozyCampingMain.BLOCKS_TAB, "oak_stump", OAK_STUMP);
         BlockRegistryUtil.registerBlock(CozyCampingMain.BLOCKS_TAB, "spruce_stump", SPRUCE_STUMP);
@@ -33,6 +36,9 @@ public class BlockRegistry {
         BlockRegistryUtil.registerBlock(CozyCampingMain.BLOCKS_TAB, "charcoal_block", CHARCOAL_BLOCK);
 
         BlockRegistryUtil.registerBlock(CozyCampingMain.BLOCKS_TAB, "bear_trap", OPEN_TRAP);
+
+        BlockRegistryUtil.registerBlock(CozyCampingMain.BLOCKS_TAB, "heather", HEATHER);
+        BlockRenderLayerMap.INSTANCE.putBlock(HEATHER, RenderLayer.getCutout());
 
         CozyCampingMain.LOGGER.info("Cozy Camping Blocks Registered!");
     }
