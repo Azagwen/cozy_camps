@@ -40,14 +40,8 @@ public class StumpBlock extends Block {
 
     @Override
     public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState neighborState, WorldAccess world, BlockPos pos, BlockPos neighborPos) {
-        var newState = this.getPlacementState(state, world, pos, direction);
-        if (neighborState.getBlock() instanceof StumpBlock && newState.get(SHAPE).getAxis() == neighborState.get(SHAPE).getAxis()) {
-            if (direction.getAxis() == state.get(SHAPE).getAxis()) {
-                return newState;
-            }
-        }
-        if (direction.getAxis() == state.get(SHAPE).getAxis() && (neighborState.getBlock() instanceof StumpBlock && direction.getAxis() == neighborState.get(SHAPE).getAxis())) {
-            return newState;
+        if (direction.getAxis() == state.get(SHAPE).getAxis()) {
+            return this.getPlacementState(state, world, pos, direction);
         }
         return super.getStateForNeighborUpdate(state, direction, neighborState, world, pos, neighborPos);
     }
@@ -59,13 +53,13 @@ public class StumpBlock extends Block {
 
     private BlockState getPlacementState(BlockState state, WorldAccess world, BlockPos pos, Direction direction) {
         var axis = direction.getAxis();
-        var positiveDir = Direction.get(Direction.AxisDirection.POSITIVE, axis);
-        var negativeDir = Direction.get(Direction.AxisDirection.NEGATIVE, axis);
-        var connectsOnPos = world.getBlockState(pos.offset(positiveDir)).getBlock() instanceof StumpBlock;
-        var connectsOnNeg = world.getBlockState(pos.offset(negativeDir)).getBlock() instanceof StumpBlock;
+        var positiveState = world.getBlockState(pos.offset(Direction.get(Direction.AxisDirection.POSITIVE, axis)));
+        var negativeState = world.getBlockState(pos.offset(Direction.get(Direction.AxisDirection.NEGATIVE, axis)));
+        var connectsOnPos = positiveState.getBlock() instanceof StumpBlock && positiveState.get(SHAPE).getAxis() == axis;
+        var connectsOnNeg = negativeState.getBlock() instanceof StumpBlock && negativeState.get(SHAPE).getAxis() == axis;
         var side = this.determineSide(state, axis, connectsOnPos, connectsOnNeg);
 
-        return this.getDefaultState().with(SHAPE, side);
+        return state.with(SHAPE, side);
     }
 
     private StumpShape determineSide(BlockState state, Direction.Axis axis, boolean hasPositive, boolean hasNegative) {

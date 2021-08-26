@@ -1,0 +1,7 @@
+{
+    "parent": "cozy_camping:block/template_stump_negative",
+    "textures": {
+        "side": "minecraft:block/birch_log",
+        "top": "minecraft:block/birch_log_top"
+    }
+}

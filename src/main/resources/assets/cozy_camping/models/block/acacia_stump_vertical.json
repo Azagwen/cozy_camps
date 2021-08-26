@@ -1,0 +1,7 @@
+{
+    "parent": "cozy_camping:block/template_stump_vertical",
+    "textures": {
+        "side": "minecraft:block/acacia_log",
+        "top": "minecraft:block/acacia_log_top"
+    }
+}
