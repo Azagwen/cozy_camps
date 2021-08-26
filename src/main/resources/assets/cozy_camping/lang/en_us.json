@@ -17,6 +17,10 @@
   "block.cozy_camping.tent": "Tent",
   "block.cozy_camping.ripped_tent": "Ripped Tent",
   "block.cozy_camping.fancy_tent": "Fancy Tent",
+  "block.cozy_camping.stone_boulder": "Boulder",
+  "block.cozy_camping.granite_boulder": "Granite Boulder",
+  "block.cozy_camping.diorite_boulder": "Diorite Boulder",
+  "block.cozy_camping.andesite_boulder": "Andesite Boulder",
 
   "item.cozy_camping.marshmallow": "Marshmallow",
   "item.cozy_camping.roasted_marshmallow": "Roasted Marshmallow",
