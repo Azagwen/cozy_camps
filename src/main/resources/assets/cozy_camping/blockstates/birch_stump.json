@@ -1,0 +1,15 @@
+{
+    "variants": {
+        "shape=vertical": { "model": "cozy_camping:block/birch_stump_vertical" },
+
+        "shape=x_centered": { "model": "cozy_camping:block/birch_stump_centered" },
+        "shape=x_centered_large": { "model": "cozy_camping:block/birch_stump_centered_large" },
+        "shape=x_positive": { "model": "cozy_camping:block/birch_stump_positive" },
+        "shape=x_negative": { "model": "cozy_camping:block/birch_stump_negative" },
+
+        "shape=z_centered": { "model": "cozy_camping:block/birch_stump_centered", "y": 90 },
+        "shape=z_centered_large": { "model": "cozy_camping:block/birch_stump_centered_large", "y": 90 },
+        "shape=z_positive": { "model": "cozy_camping:block/birch_stump_positive", "y": 90 },
+        "shape=z_negative": { "model": "cozy_camping:block/birch_stump_negative", "y": 90 }
+    }
+}

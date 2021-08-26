@@ -10,7 +10,6 @@ import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 
 public class HeatherBlock extends PlantBlock {
-
     public static final VoxelShape OUTLINE = VoxelShapes.cuboid(0f, 0f, 0f, 0.8f, 0.8f, 0.8f);
 
     protected HeatherBlock(Settings settings) {
@@ -21,5 +20,4 @@ public class HeatherBlock extends PlantBlock {
     public VoxelShape getOutlineShape(BlockState state, BlockView view, BlockPos pos, ShapeContext context) {
         return OUTLINE;
     }
-
 }
