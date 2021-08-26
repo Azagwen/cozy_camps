@@ -4,6 +4,7 @@
   "package": "net.kings_of_devs.cozy_camping.mixin",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
+    "LivingEntityMixin",
     "PlayerEntityMixin",
     "VillagerTextureMixin"
   ],
