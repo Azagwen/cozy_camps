@@ -21,7 +21,7 @@ public class BlockRegistry {
 
     public static final Block OPEN_TRAP = new TrapBlock(FabricBlockSettings.copyOf(Blocks.IRON_BLOCK).requiresTool().breakByTool(FabricToolTags.PICKAXES));
 
-    public static final Block HEATHER = new HeatherBlock(FabricBlockSettings.copyOf(Blocks.SWEET_BERRY_BUSH));
+    public static final Block HEATHER = new HeatherBlock(FabricBlockSettings.copyOf(Blocks.GRASS));
 
     public static void init() {
         BlockRegistryUtil.registerBlock(CozyCampingMain.BLOCKS_TAB, "oak_stump", OAK_STUMP);
