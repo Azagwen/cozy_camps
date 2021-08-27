@@ -1,17 +1,17 @@
 {
-  "required": true,
-  "minVersion": "0.8",
-  "package": "net.kings_of_devs.cozy_camping.mixin",
-  "compatibilityLevel": "JAVA_16",
-  "mixins": [
-    "LivingEntityMixin",
-    "PlayerEntityMixin",
-    "VillagerTextureMixin"
-  ],
-  "client": [
-    "client.CreativeInventoryScreenMixin"
-  ],
-  "injectors": {
-    "defaultRequire": 1
+    "required": true,
+    "minVersion": "0.8",
+    "package": "net.kings_of_devs.cozy_camping.mixin",
+    "compatibilityLevel": "JAVA_16",
+    "mixins": [
+        "LivingEntityMixin",
+        "PlayerEntityMixin",
+        "VillagerTextureMixin"
+    ],
+    "client": [
+        "client.CreativeInventoryScreenMixin"
+    ],
+    "injectors": {
+        "defaultRequire": 1
   }
 }

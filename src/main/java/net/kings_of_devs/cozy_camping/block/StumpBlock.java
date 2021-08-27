@@ -1,21 +1,30 @@
 package net.kings_of_devs.cozy_camping.block;
 
 import com.google.common.collect.Maps;
+import net.kings_of_devs.cozy_camping.CozyCampingMain;
 import net.kings_of_devs.cozy_camping.block.state.CozyCampProperties;
 import net.kings_of_devs.cozy_camping.block.state.StumpShape;
+import net.kings_of_devs.cozy_camping.entity.SeatEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.EnumProperty;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
+import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 
+import java.util.List;
 import java.util.Map;
 
 public class StumpBlock extends Block {
@@ -30,6 +39,40 @@ public class StumpBlock extends Block {
     @Override
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
         return SHAPE_MAP.get(state.get(SHAPE));
+    }
+
+    @Override
+    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+        if (!world.isClient) {
+            if (player.hasVehicle() || player.isSpectator() || !player.getMainHandStack().isEmpty()) {
+                return ActionResult.FAIL;
+            }
+
+            var posX = (pos.getX() + 8 / 16F);
+            var posY = (pos.getY() + (state.get(SHAPE) == StumpShape.VERTICAL ? 8 / 16F : 6 / 16F));
+            var posZ = (pos.getZ() + 8 / 16F);
+
+            var active = world.getNonSpectatingEntities(SeatEntity.class, new Box(pos));
+            if (!active.isEmpty()) {
+                return ActionResult.FAIL;
+            }
+
+            var yaw = player.getHorizontalFacing().asRotation();
+            var entity = CozyCampingMain.SEAT.create(world);
+            entity.updatePositionAndAngles(posX, posY, posZ, yaw, 0);
+            entity.setNoGravity(true);
+            entity.setSilent(true);
+            entity.setInvisible(true);
+            entity.setHeadYaw(yaw);
+            entity.setBodyYaw(yaw);
+            if (world.spawnEntity(entity)) {
+                player.startRiding(entity, true);
+                player.setBodyYaw(yaw);
+                player.setHeadYaw(yaw);
+                return ActionResult.SUCCESS;
+            }
+        }
+        return ActionResult.FAIL;
     }
 
     @Override

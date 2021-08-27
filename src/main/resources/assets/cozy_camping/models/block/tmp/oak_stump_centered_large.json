@@ -1,7 +1,0 @@
-{
-    "parent": "cozy_camping:block/template_stump_centered_large",
-    "textures": {
-        "side": "minecraft:block/crimson_stem",
-        "top": "minecraft:block/crimson_stem_top"
-    }
-}

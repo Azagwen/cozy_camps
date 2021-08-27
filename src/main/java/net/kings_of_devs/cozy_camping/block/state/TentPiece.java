@@ -6,12 +6,20 @@ public enum TentPiece implements StringIdentifiable {
     CENTER("center"),
     NORTH("north"),
     SOUTH("south"),
-    EAST("west"),
-    WEST("east"),
-    NORTH_EAST("north_west"),
-    NORTH_WEST("north_east"),
-    SOUTH_EAST("south_west"),
-    SOUTH_WEST("south_east");
+    EAST("east"),
+    WEST("west"),
+    NORTH_LOWEST("north_lowest"),
+    SOUTH_LOWEST("south_lowest"),
+    EAST_LOWEST("east_lowest"),
+    WEST_LOWEST("west_lowest"),
+    NORTH_EAST("north_east"),
+    NORTH_WEST("north_west"),
+    SOUTH_EAST("south_east"),
+    SOUTH_WEST("south_west"),
+    NORTH_EAST_LOWEST("north_east_lowest"),
+    NORTH_WEST_LOWEST("north_west_lowest"),
+    SOUTH_EAST_LOWEST("south_east_lowest"),
+    SOUTH_WEST_LOWEST("south_west_lowest");
 
     public final String name;
     TentPiece(String name) {

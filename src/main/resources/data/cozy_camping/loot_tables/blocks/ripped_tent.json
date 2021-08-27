@@ -10,14 +10,14 @@
           "conditions": [
             {
               "condition": "minecraft:block_state_property",
-              "block": "cozy_camping:tent",
+              "block": "cozy_camping:ripped_tent",
               "properties": {
                 "half": "lower",
                 "piece": "center"
               }
             }
           ],
-          "name": "cozy_camping:tent"
+          "name": "cozy_camping:ripped_tent"
         }
       ],
       "conditions": [

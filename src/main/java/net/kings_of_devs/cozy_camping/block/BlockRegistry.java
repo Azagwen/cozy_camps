@@ -9,9 +9,9 @@ import net.minecraft.client.render.RenderLayer;
 
 public class BlockRegistry {
 
-    public static final Block TENT = new TentBlock(FabricBlockSettings.copyOf(Blocks.WHITE_WOOL));
-    public static final Block RIPPED_TENT = new TentBlock(FabricBlockSettings.copyOf(Blocks.WHITE_WOOL));
-    public static final Block FANCY_TENT = new TentBlock(FabricBlockSettings.copyOf(Blocks.WHITE_WOOL));
+    public static final Block TENT = new TentBlock(FabricBlockSettings.copyOf(Blocks.WHITE_WOOL).nonOpaque());
+    public static final Block RIPPED_TENT = new TentBlock(FabricBlockSettings.copyOf(Blocks.WHITE_WOOL).nonOpaque());
+    public static final Block FANCY_TENT = new TentBlock(FabricBlockSettings.copyOf(Blocks.WHITE_WOOL).nonOpaque());
     public static final Block OAK_STUMP = new StumpBlock(FabricBlockSettings.copyOf(Blocks.OAK_PLANKS).breakByTool(FabricToolTags.AXES));
     public static final Block SPRUCE_STUMP = new StumpBlock(FabricBlockSettings.copyOf(Blocks.SPRUCE_PLANKS).breakByTool(FabricToolTags.AXES));
     public static final Block BIRCH_STUMP = new StumpBlock(FabricBlockSettings.copyOf(Blocks.BIRCH_PLANKS).breakByTool(FabricToolTags.AXES));
