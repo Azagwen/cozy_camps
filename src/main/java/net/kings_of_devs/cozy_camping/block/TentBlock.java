@@ -84,7 +84,7 @@ public class TentBlock extends Block {
         world.setBlockState(pos.north().west(), state.with(PIECE, TentPiece.NORTH_WEST), Block.NOTIFY_ALL);
         world.setBlockState(pos.south().east(), state.with(PIECE, TentPiece.SOUTH_EAST), Block.NOTIFY_ALL);
         world.setBlockState(pos.south().west(), state.with(PIECE, TentPiece.SOUTH_WEST), Block.NOTIFY_ALL);
-        this.placeLowestEnds(world, pos, state);
+//        this.placeLowestEnds(world, pos, state);
     }
 
     private void placeLowestEnds(World world, BlockPos pos, BlockState state) {
@@ -115,7 +115,7 @@ public class TentBlock extends Block {
                 world.breakBlock(pos, true, null);
                 this.checkBlocksAroundAndTryBreak(state, pos, world, null);
             }
-            world.getBlockTickScheduler().schedule(pos, this, 1);
+//            world.getBlockTickScheduler().schedule(pos, this, 1);
         }
     }
 
