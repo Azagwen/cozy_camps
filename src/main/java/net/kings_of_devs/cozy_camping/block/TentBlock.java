@@ -171,7 +171,8 @@ public class TentBlock extends Block {
             case NORTH, SOUTH -> values = new int[] {-2, 2, -1, 1};
             case EAST, WEST -> values = new int[] {-1, 1, -2, 2};
         }
-        this.loopBasedBreaking(values[0], values[1], values[2], values[3], half, world, pos, player);
+//        this.loopBasedBreaking(values[0], values[1], values[2], values[3], half, world, pos, player);
+        this.loopBasedBreaking(-1, 1, -1, 1, half, world, pos, player);
     }
 
     private void loopBasedBreaking(int minX, int maxX, int minZ, int maxZ, Direction half, World world, BlockPos pos, @Nullable PlayerEntity player) {
