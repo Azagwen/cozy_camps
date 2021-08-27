@@ -3,16 +3,21 @@ package net.kings_of_devs.cozy_camping;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.kings_of_devs.cozy_camping.block.BlockRegistry;
+import net.kings_of_devs.cozy_camping.block.TrapBlock;
+import net.kings_of_devs.cozy_camping.block.block_entity.BlockEntityRegistry;
+import net.kings_of_devs.cozy_camping.block.block_entity.TrapBlockEntity;
 import net.kings_of_devs.cozy_camping.entity.SeatEntity;
 import net.kings_of_devs.cozy_camping.group.TabbedItemGroup;
 import net.kings_of_devs.cozy_camping.item.ItemRegistry;
 import net.kings_of_devs.cozy_camping.villager.Camper;
 import net.kings_of_devs.cozy_camping.villager.CamperPOI;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -49,6 +54,7 @@ public class CozyCampingMain implements ModInitializer {
 		ItemRegistry.init();
 		CamperPOI.init();
 		Camper.init();
+		BlockEntityRegistry.init();
 
 		//Registers the Stump Seat entity.
 		Registry.register(Registry.ENTITY_TYPE, id("seat"), SEAT);
