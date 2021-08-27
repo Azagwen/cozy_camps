@@ -18,6 +18,7 @@ public class CozyCampingClient implements ClientModInitializer {
         BlockRenderLayerMap.INSTANCE.putBlock(BlockRegistry.RIPPED_TENT, RenderLayer.getCutout());
         BlockRenderLayerMap.INSTANCE.putBlock(BlockRegistry.FANCY_TENT, RenderLayer.getCutout());
         BlockRenderLayerMap.INSTANCE.putBlock(BlockRegistry.HEATHER, RenderLayer.getCutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(BlockRegistry.BEAR_TRAP, RenderLayer.getCutout());
 
         EntityRendererRegistry.INSTANCE.register(CozyCampingMain.SEAT, SeatEntityRenderer::new);
     }
