@@ -84,7 +84,7 @@ public class TentBlock extends Block {
         world.setBlockState(pos.north().west(), state.with(PIECE, TentPiece.NORTH_WEST), Block.NOTIFY_ALL);
         world.setBlockState(pos.south().east(), state.with(PIECE, TentPiece.SOUTH_EAST), Block.NOTIFY_ALL);
         world.setBlockState(pos.south().west(), state.with(PIECE, TentPiece.SOUTH_WEST), Block.NOTIFY_ALL);
-//        this.placeLowestEnds(world, pos, state);
+        this.placeLowestEnds(world, pos, state);
     }
 
     private void placeLowestEnds(World world, BlockPos pos, BlockState state) {
@@ -115,31 +115,6 @@ public class TentBlock extends Block {
                 world.breakBlock(pos, true, null);
                 this.checkBlocksAroundAndTryBreak(state, pos, world, null);
             }
-//            world.getBlockTickScheduler().schedule(pos, this, 1);
-        }
-    }
-
-    @Override
-    public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
-        switch (state.get(FACING)) {
-            case NORTH, SOUTH -> {
-                switch (state.get(PIECE)) {
-                    case EAST, NORTH_EAST, SOUTH_EAST -> this.tryBreakSide(state, world, pos, Direction.EAST);
-                    case WEST, NORTH_WEST, SOUTH_WEST -> this.tryBreakSide(state, world, pos, Direction.WEST);
-                }
-            }
-            case EAST, WEST -> {
-                switch (state.get(PIECE)) {
-                    case NORTH, NORTH_EAST, SOUTH_EAST -> this.tryBreakSide(state, world, pos, Direction.NORTH);
-                    case SOUTH, NORTH_WEST, SOUTH_WEST -> this.tryBreakSide(state, world, pos, Direction.SOUTH);
-                }
-            }
-        }
-    }
-
-    private void tryBreakSide(BlockState state, World world, BlockPos pos, Direction direction) {
-        if (!(world.getBlockState(pos.offset(direction)).getBlock() instanceof TentBlock)) {
-            this.checkBlocksAroundAndTryBreak(state, pos, world, null);
         }
     }
 
@@ -161,8 +136,31 @@ public class TentBlock extends Block {
 
     @Override
     public void onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player) {
-        this.checkBlocksAroundAndTryBreak(state, pos, world, player);
+        switch (state.get(PIECE)) {
+            case NORTH_LOWEST -> this.breakFromLowestSide(world, pos, player, Direction.SOUTH, TentPiece.NORTH);
+            case SOUTH_LOWEST -> this.breakFromLowestSide(world, pos, player, Direction.NORTH, TentPiece.SOUTH);
+            case EAST_LOWEST -> this.breakFromLowestSide(world, pos, player, Direction.WEST, TentPiece.EAST);
+            case WEST_LOWEST -> this.breakFromLowestSide(world, pos, player, Direction.EAST, TentPiece.WEST);
+            case NORTH_EAST_LOWEST -> this.breakFromLowestCorner(world, pos, player, Direction.WEST, Direction.SOUTH, TentPiece.NORTH_EAST);
+            case NORTH_WEST_LOWEST -> this.breakFromLowestCorner(world, pos, player, Direction.EAST, Direction.SOUTH, TentPiece.NORTH_WEST);
+            case SOUTH_EAST_LOWEST -> this.breakFromLowestCorner(world, pos, player, Direction.WEST, Direction.NORTH, TentPiece.SOUTH_EAST);
+            case SOUTH_WEST_LOWEST -> this.breakFromLowestCorner(world, pos, player, Direction.EAST, Direction.NORTH, TentPiece.SOUTH_WEST);
+            default -> this.checkBlocksAroundAndTryBreak(state, pos, world, player);
+        }
         super.onBreak(world, pos, state, player);
+    }
+
+    private void breakFromLowestCorner(World world, BlockPos pos, PlayerEntity player, Direction directionX, Direction directionZ, TentPiece piece) {
+        this.breakFromLowestSide(world, pos, player, directionZ, piece);
+        this.breakFromLowestSide(world, pos, player, directionX, piece);
+    }
+
+    private void breakFromLowestSide(World world, BlockPos pos, PlayerEntity player, Direction direction, TentPiece piece) {
+        var posToCheck = pos.offset(direction);
+        var stateToCheck = world.getBlockState(posToCheck);
+        if (stateToCheck.getBlock() instanceof TentBlock && stateToCheck.get(PIECE) == piece) {
+            this.checkBlocksAroundAndTryBreak(stateToCheck, posToCheck, world, player);
+        }
     }
 
     private void breakFromMiddle(BlockState state, Direction half, World world, BlockPos pos, PlayerEntity player) {
@@ -171,8 +169,8 @@ public class TentBlock extends Block {
             case NORTH, SOUTH -> values = new int[] {-2, 2, -1, 1};
             case EAST, WEST -> values = new int[] {-1, 1, -2, 2};
         }
-//        this.loopBasedBreaking(values[0], values[1], values[2], values[3], half, world, pos, player);
-        this.loopBasedBreaking(-1, 1, -1, 1, half, world, pos, player);
+        this.loopBasedBreaking(values[0], values[1], values[2], values[3], half, world, pos, player);
+//        this.loopBasedBreaking(-1, 1, -1, 1, half, world, pos, player);
     }
 
     private void loopBasedBreaking(int minX, int maxX, int minZ, int maxZ, Direction half, World world, BlockPos pos, @Nullable PlayerEntity player) {
