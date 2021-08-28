@@ -1,0 +1,23 @@
+{
+    "ambientocclusion": true,
+    "credit": "Made with Blockbench",
+    "texture_size": [64, 64],
+    "textures": {
+        "particle": "#texture",
+        "texture": "cozy_camping:block/tent_wool"
+    },
+    "elements": [
+        {
+            "name": "lower_north",
+            "from": [6.5, 0, 6.5],
+            "to": [9.5, 16, 9.5],
+            "faces": {
+                "north": {"uv": [13, 0, 13.75, 4], "texture": "#texture"},
+                "east": {"uv": [15.25, 0, 16, 4], "texture": "#texture"},
+                "south": {"uv": [14.5, 0, 15.25, 4], "texture": "#texture"},
+                "west": {"uv": [13.75, 0, 14.5, 4], "texture": "#texture"},
+                "down": {"uv": [13, 2.75, 13.75, 3.5], "texture": "#texture"}
+            }
+        }
+    ]
+}

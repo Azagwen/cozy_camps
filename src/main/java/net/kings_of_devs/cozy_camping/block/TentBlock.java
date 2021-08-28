@@ -4,11 +4,11 @@ import net.kings_of_devs.cozy_camping.block.state.CozyCampProperties;
 import net.kings_of_devs.cozy_camping.block.state.TentPiece;
 import net.minecraft.block.*;
 import net.minecraft.block.enums.DoubleBlockHalf;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.state.property.EnumProperty;
@@ -20,18 +20,22 @@ import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldView;
+import net.minecraft.world.event.GameEvent;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Random;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 
 public class TentBlock extends Block {
-    public static final DirectionProperty FACING;
-    public static final EnumProperty<DoubleBlockHalf> HALF;
-    public static final EnumProperty<TentPiece> PIECE;
     private static final VoxelShape NORTH_SHAPE;
     private static final VoxelShape SOUTH_SHAPE;
     private static final VoxelShape EAST_SHAPE;
     private static final VoxelShape WEST_SHAPE;
+    private static final VoxelShape NORTH_COLLISION_SHAPE;
+    private static final VoxelShape SOUTH_COLLISION_SHAPE;
+    private static final VoxelShape EAST_COLLISION_SHAPE;
+    private static final VoxelShape WEST_COLLISION_SHAPE;
     private static final VoxelShape UPPER_NORTH_SHAPE;
     private static final VoxelShape UPPER_SOUTH_SHAPE;
     private static final VoxelShape UPPER_EAST_SHAPE;
@@ -40,6 +44,9 @@ public class TentBlock extends Block {
     private static final VoxelShape UPPER_NORTH_WEST_SHAPE;
     private static final VoxelShape UPPER_SOUTH_EAST_SHAPE;
     private static final VoxelShape UPPER_SOUTH_WEST_SHAPE;
+    public static final DirectionProperty FACING;
+    public static final EnumProperty<DoubleBlockHalf> HALF;
+    public static final EnumProperty<TentPiece> PIECE;
 
     public TentBlock(Settings settings) {
         super(settings);
@@ -51,15 +58,10 @@ public class TentBlock extends Block {
         var value = 1.0F;
         if (state.get(HALF) == DoubleBlockHalf.LOWER) {
             if (state.get(PIECE) == TentPiece.CENTER) {
-                value = 0.25F;
+                value = 0.125F;
             }
         }
         return value;
-    }
-
-    @Override
-    public boolean isTranslucent(BlockState state, BlockView world, BlockPos pos) {
-        return true;
     }
 
     @Override
@@ -113,30 +115,55 @@ public class TentBlock extends Block {
         if (state.get(HALF) == DoubleBlockHalf.LOWER) {
             if (!world.getBlockState(pos.down()).isSideSolidFullSquare(world, pos.down(), Direction.UP)) {
                 world.breakBlock(pos, true, null);
-                this.checkBlocksAroundAndTryBreak(state, pos, world, null);
+                this.tryBreak(world, pos, state, null);
+            }
+        }
+    }
+
+    private void loopThroughSlice(BlockState state, BiConsumer<Integer, Integer> consumer, boolean includeLowestEnds) {
+        var isFacingZ = state.get(FACING).getAxis() == Direction.Axis.Z;
+        var minX = includeLowestEnds ? -1 : ( isFacingZ ? -2 : -1 );
+        var maxX = includeLowestEnds ?  1 : ( isFacingZ ?  2 :  1 );
+        var minZ = includeLowestEnds ? -1 : ( isFacingZ ? -1 : -2 );
+        var maxZ = includeLowestEnds ?  1 : ( isFacingZ ?  1 :  2 );
+
+        for (int x = minX; x <= maxX; x++) { //width
+            for (int z = minZ; z <= maxZ; z++) { //length
+                consumer.accept(x, z);
             }
         }
     }
 
     @Override
     public boolean canPlaceAt(BlockState state, WorldView world, BlockPos pos) {
-        for (int x = -1; x <= 1; x++) { //width
-            for (int z = -1; z <= 1; z++) { //length
-                var newPos = pos.offset(Direction.NORTH, x).offset(Direction.EAST, z);
-                if (!world.getBlockState(newPos).isAir() || !world.getBlockState(newPos.up()).isAir()) {
-                    return false;
-                }
-                if (!world.getBlockState(newPos.down()).isSideSolidFullSquare(world, newPos.down(), Direction.UP)) {
-                    return false;
-                }
-            }
-        }
-        return true;
+        var canPlace = new AtomicBoolean(true);
+        //Check Lower half and Floor validity
+        this.loopThroughSlice(state, (x, z) -> {
+            var newPos = pos.offset(Direction.Axis.X, x).offset(Direction.Axis.Z, z);
+            if (!world.getBlockState(newPos).isAir())
+                canPlace.set(false);
+            if (!world.getBlockState(newPos.down()).isSideSolidFullSquare(world, newPos.down(), Direction.UP))
+                canPlace.set(!world.getBlockState(newPos.down()).isSideSolidFullSquare(world, newPos.down(), Direction.UP));
+        }, false);
+        //Check Upper half
+        this.loopThroughSlice(state, (x, z) -> {
+            var newPos = pos.offset(Direction.Axis.X, x).offset(Direction.Axis.Z, z);
+            if (!world.getBlockState(newPos.up()).isAir())
+                canPlace.set(false);
+        }, true);
+        return canPlace.get();
     }
 
     @Override
     public void onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player) {
+        this.tryBreak(world, pos, state, player);
+        super.onBreak(world, pos, state, player);
+    }
+
+    private void tryBreak(World world, BlockPos pos, BlockState state, PlayerEntity player) {
+        var half = state.get(HALF) == DoubleBlockHalf.UPPER ? Direction.DOWN : Direction.UP;
         switch (state.get(PIECE)) {
+            case CENTER -> this.breakFromMiddle(state, half, world, pos, player);
             case NORTH_LOWEST -> this.breakFromLowestSide(world, pos, player, Direction.SOUTH, TentPiece.NORTH);
             case SOUTH_LOWEST -> this.breakFromLowestSide(world, pos, player, Direction.NORTH, TentPiece.SOUTH);
             case EAST_LOWEST -> this.breakFromLowestSide(world, pos, player, Direction.WEST, TentPiece.EAST);
@@ -147,7 +174,6 @@ public class TentBlock extends Block {
             case SOUTH_WEST_LOWEST -> this.breakFromLowestCorner(world, pos, player, Direction.EAST, Direction.NORTH, TentPiece.SOUTH_WEST);
             default -> this.checkBlocksAroundAndTryBreak(state, pos, world, player);
         }
-        super.onBreak(world, pos, state, player);
     }
 
     private void breakFromLowestCorner(World world, BlockPos pos, PlayerEntity player, Direction directionX, Direction directionZ, TentPiece piece) {
@@ -163,50 +189,58 @@ public class TentBlock extends Block {
         }
     }
 
-    private void breakFromMiddle(BlockState state, Direction half, World world, BlockPos pos, PlayerEntity player) {
-        var values = new int[4];
-        switch (state.get(FACING)) {
-            case NORTH, SOUTH -> values = new int[] {-2, 2, -1, 1};
-            case EAST, WEST -> values = new int[] {-1, 1, -2, 2};
-        }
-        this.loopBasedBreaking(values[0], values[1], values[2], values[3], half, world, pos, player);
-//        this.loopBasedBreaking(-1, 1, -1, 1, half, world, pos, player);
+    private void checkBlocksAroundAndTryBreak(BlockState state, BlockPos pos, World world, PlayerEntity player) {
+        this.loopThroughSlice(state, (x, z) -> {
+            var newPos = pos.offset(Direction.Axis.X, x).offset(Direction.Axis.Z, z);
+            var foundState = world.getBlockState(newPos);
+            if (foundState.getBlock() instanceof TentBlock && foundState.get(PIECE) == TentPiece.CENTER) {
+                var half = foundState.get(HALF) == DoubleBlockHalf.UPPER ? Direction.DOWN : Direction.UP;
+                this.breakFromMiddle(state, half, world, newPos, player);
+            }
+        }, true);
     }
 
-    private void loopBasedBreaking(int minX, int maxX, int minZ, int maxZ, Direction half, World world, BlockPos pos, @Nullable PlayerEntity player) {
+    private void breakFromMiddle(BlockState state, Direction half, World world, BlockPos pos, PlayerEntity player) {
         var canLoot = player == null || !player.isCreative();
         var basePos = pos.offset(half);
-        for (int x = minX; x <= maxX; x++) { //width
-            for (int z = minZ; z <= maxZ; z++) { //length
-                var newPos = basePos.offset(Direction.Axis.X, x).offset(Direction.Axis.Z, z);
-                if (world.getBlockState(newPos).getBlock() instanceof TentBlock) {
-                    world.breakBlock(newPos, canLoot, player);
-                }
-                if (world.getBlockState(newPos.offset(half.getOpposite())).getBlock() instanceof TentBlock) {
-                    world.breakBlock(newPos.offset(half.getOpposite()), canLoot, player);
-                }
+        this.loopThroughSlice(state, (x, z) -> {
+            var newPos = basePos.offset(Direction.Axis.X, x).offset(Direction.Axis.Z, z);
+            if (world.getBlockState(newPos).getBlock() instanceof TentBlock) {
+                this.breakBlock(world,newPos, canLoot, player);
             }
-        }
+            if (world.getBlockState(newPos.offset(half.getOpposite())).getBlock() instanceof TentBlock) {
+                this.breakBlock(world, newPos.offset(half.getOpposite()), canLoot, player);
+            }
+        }, false);
     }
 
-    private void checkBlocksAroundAndTryBreak(BlockState state, BlockPos pos, World world, PlayerEntity player) {
-        for (int x = -1; x <= 1; x++) { //width
-            for (int z = -1; z <= 1; z++) { //length
-                var newPos = pos.offset(Direction.Axis.X, x).offset(Direction.Axis.Z, z);
-                var foundState = world.getBlockState(newPos);
-                if (foundState.getBlock() instanceof TentBlock) {
-                    if (foundState.get(PIECE) == TentPiece.CENTER) {
-                        var half = foundState.get(HALF) == DoubleBlockHalf.UPPER ? Direction.DOWN : Direction.UP;
-                        this.breakFromMiddle(state, half, world, newPos, player);
-                    }
-                }
-            }
+    public void breakBlock(World world, BlockPos pos, boolean drop, @Nullable Entity breakingEntity) {
+        var blockState = world.getBlockState(pos);
+        var fluidState = world.getFluidState(pos);
+        var hasBroken = world.setBlockState(pos, fluidState.getBlockState(), Block.NOTIFY_ALL, 512);
+        world.addBlockBreakParticles(pos, blockState);
+
+        if (drop) {
+            Block.dropStacks(blockState, world, pos, null, breakingEntity, ItemStack.EMPTY);
+        }
+        if (hasBroken) {
+            world.emitGameEvent(breakingEntity, GameEvent.BLOCK_DESTROY, pos);
         }
     }
 
     @Override
-    public VoxelShape getOutlineShape(BlockState state, BlockView view, BlockPos pos, ShapeContext context) {
-        var defaultShape = super.getOutlineShape(state, view, pos, context);
+    public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+        var defaultShape = switch (state.get(PIECE)) {
+            case NORTH_LOWEST -> UPPER_NORTH_SHAPE;
+            case SOUTH_LOWEST -> UPPER_SOUTH_SHAPE;
+            case EAST_LOWEST -> UPPER_EAST_SHAPE;
+            case WEST_LOWEST -> UPPER_WEST_SHAPE;
+            case NORTH_EAST_LOWEST -> UPPER_NORTH_EAST_SHAPE;
+            case NORTH_WEST_LOWEST -> UPPER_NORTH_WEST_SHAPE;
+            case SOUTH_EAST_LOWEST -> UPPER_SOUTH_EAST_SHAPE;
+            case SOUTH_WEST_LOWEST -> UPPER_SOUTH_WEST_SHAPE;
+            default -> super.getOutlineShape(state, world, pos, context);
+        };
         var isUpper = state.get(HALF) == DoubleBlockHalf.UPPER;
         var northShape = isUpper ? UPPER_NORTH_SHAPE : defaultShape;
         var southShape = isUpper ? UPPER_SOUTH_SHAPE : defaultShape;
@@ -214,13 +248,48 @@ public class TentBlock extends Block {
         var westShape = isUpper ? UPPER_WEST_SHAPE : defaultShape;
 
         return switch (state.get(FACING)) {
-            case NORTH, SOUTH -> this.findOutline(state, defaultShape, NORTH_SHAPE, SOUTH_SHAPE, eastShape, westShape);
-            case EAST, WEST -> this.findOutline(state, defaultShape, northShape, southShape, EAST_SHAPE, WEST_SHAPE);
+            case NORTH, SOUTH -> this.getShapeForPiece(state, defaultShape, NORTH_SHAPE, SOUTH_SHAPE, eastShape, westShape);
+            case EAST, WEST -> this.getShapeForPiece(state, defaultShape, northShape, southShape, EAST_SHAPE, WEST_SHAPE);
             case UP, DOWN -> defaultShape;
         };
     }
 
-    private VoxelShape findOutline(BlockState state, VoxelShape defaultShape, VoxelShape north, VoxelShape south, VoxelShape east, VoxelShape west) {
+    @Override
+    public VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+        var isUpper = state.get(HALF) == DoubleBlockHalf.UPPER;
+        var centerShape = isUpper ? VoxelShapes.union(NORTH_COLLISION_SHAPE, SOUTH_COLLISION_SHAPE) : VoxelShapes.empty();
+        var defaultShape = switch (state.get(PIECE)) {
+            case NORTH_LOWEST -> UPPER_NORTH_SHAPE;
+            case SOUTH_LOWEST -> UPPER_SOUTH_SHAPE;
+            case EAST_LOWEST -> UPPER_EAST_SHAPE;
+            case WEST_LOWEST -> UPPER_WEST_SHAPE;
+            case NORTH_EAST_LOWEST -> UPPER_NORTH_EAST_SHAPE;
+            case NORTH_WEST_LOWEST -> UPPER_NORTH_WEST_SHAPE;
+            case SOUTH_EAST_LOWEST -> UPPER_SOUTH_EAST_SHAPE;
+            case SOUTH_WEST_LOWEST -> UPPER_SOUTH_WEST_SHAPE;
+            default -> super.getOutlineShape(state, world, pos, context);
+        };
+        var northShapeX = isUpper ? UPPER_NORTH_SHAPE : defaultShape;
+        var southShapeX = isUpper ? UPPER_SOUTH_SHAPE : defaultShape;
+        var eastShapeZ = isUpper ? UPPER_EAST_SHAPE : defaultShape;
+        var westShapeZ = isUpper ? UPPER_WEST_SHAPE : defaultShape;
+        var northShapeZ = isUpper ? NORTH_COLLISION_SHAPE : VoxelShapes.empty();
+        var southShapeZ = isUpper ? SOUTH_COLLISION_SHAPE : VoxelShapes.empty();
+        var eastShapeX = isUpper ? EAST_COLLISION_SHAPE : VoxelShapes.empty();
+        var westShapeX = isUpper ? WEST_COLLISION_SHAPE : VoxelShapes.empty();
+
+        if (state.get(PIECE) != TentPiece.CENTER) {
+            return switch (state.get(FACING).getAxis()) {
+                case Z -> this.getShapeForPiece(state, defaultShape, northShapeZ, southShapeZ, eastShapeZ, westShapeZ);
+                case X -> this.getShapeForPiece(state, defaultShape, northShapeX, southShapeX, eastShapeX, westShapeX);
+                case Y -> defaultShape;
+            };
+        } else {
+            return centerShape;
+        }
+    }
+
+    private VoxelShape getShapeForPiece(BlockState state, VoxelShape defaultShape, VoxelShape north, VoxelShape south, VoxelShape east, VoxelShape west) {
         return switch (state.get(PIECE)) {
             case NORTH -> north;
             case SOUTH -> south;
@@ -236,9 +305,9 @@ public class TentBlock extends Block {
 
     private VoxelShape getCornerOutline(BlockState state, VoxelShape defaultShape, VoxelShape upperShape, VoxelShape lowerShapeOnZ, VoxelShape lowerShapeOnX) {
         var isUpper = state.get(HALF) == DoubleBlockHalf.UPPER;
-        return switch(state.get(FACING)) {
-            case NORTH, SOUTH -> isUpper ? upperShape : lowerShapeOnZ;
-            case EAST, WEST -> isUpper ? upperShape : lowerShapeOnX;
+        return switch(state.get(FACING).getAxis()) {
+            case Z -> isUpper ? upperShape : lowerShapeOnZ;
+            case X -> isUpper ? upperShape : lowerShapeOnX;
             default -> defaultShape;
         };
     }
@@ -268,5 +337,9 @@ public class TentBlock extends Block {
         SOUTH_SHAPE = Block.createCuboidShape(0D, 0D, 0D, 16D, 16D, 08D);
         EAST_SHAPE = Block.createCuboidShape(0D, 0D, 0D, 08D, 16D, 16D);
         WEST_SHAPE = Block.createCuboidShape(8D, 0D, 0D, 16D, 16D, 16D);
+        NORTH_COLLISION_SHAPE = Block.createCuboidShape(0D, 8D, 8D, 16D, 16D, 16D);
+        SOUTH_COLLISION_SHAPE = Block.createCuboidShape(0D, 8D, 0D, 16D, 16D, 08D);
+        EAST_COLLISION_SHAPE = Block.createCuboidShape(0D, 8D, 0D, 08D, 16D, 16D);
+        WEST_COLLISION_SHAPE = Block.createCuboidShape(8D, 8D, 0D, 16D, 16D, 16D);
     }
 }
