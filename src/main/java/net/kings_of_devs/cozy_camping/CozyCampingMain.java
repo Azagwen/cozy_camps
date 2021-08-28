@@ -16,6 +16,7 @@ import net.kings_of_devs.cozy_camping.group.TabbedItemGroup;
 import net.kings_of_devs.cozy_camping.item.ItemRegistry;
 import net.kings_of_devs.cozy_camping.villager.Camper;
 import net.kings_of_devs.cozy_camping.villager.CamperPOI;
+import net.kings_of_devs.cozy_camping.worldgen.*;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.EntityDimensions;
@@ -55,6 +56,7 @@ public class CozyCampingMain implements ModInitializer {
 		CamperPOI.init();
 		Camper.init();
 		BlockEntityRegistry.init();
+		WorldgenMain.init();
 
 		//Registers the Stump Seat entity.
 		Registry.register(Registry.ENTITY_TYPE, id("seat"), SEAT);
