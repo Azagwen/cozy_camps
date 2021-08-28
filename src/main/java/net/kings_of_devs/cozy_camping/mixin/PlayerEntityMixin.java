@@ -10,9 +10,8 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(PlayerEntity.class)
-public class PlayerEntityMixin implements PlayerSpeedDuck {
+public class PlayerEntityMixin {
     private final PlayerEntity self = (PlayerEntity) (Object) this;
-    private float speedMultiplier = 1.0F;
 
     @ModifyArg(method = "tickMovement", at =
     @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;setMovementSpeed(F)V", args = {"log=false"}), index = 0)
@@ -26,11 +25,6 @@ public class PlayerEntityMixin implements PlayerSpeedDuck {
     }
 
     private float getSpeed(float input) {
-        return self.getMainHandStack().isOf(ItemRegistry.WALKING_STICK) ? (input * 1.4F) * this.speedMultiplier : input;
-    }
-
-    @Override
-    public void setSpeed(float speed) {
-        this.speedMultiplier = speed;
+        return self.getMainHandStack().isOf(ItemRegistry.WALKING_STICK) ? (input * 1.4F) : input;
     }
 }
