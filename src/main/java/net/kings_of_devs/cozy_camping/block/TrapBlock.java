@@ -1,16 +1,12 @@
 package net.kings_of_devs.cozy_camping.block;
 
 import net.kings_of_devs.cozy_camping.block.block_entity.TrapBlockEntity;
-import net.kings_of_devs.cozy_camping.mixin.LivingEntityAccessor;
-import net.kings_of_devs.cozy_camping.mixin.PlayerSpeedDuck;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
@@ -70,6 +66,7 @@ public class TrapBlock extends Block implements BlockEntityProvider {
             } else {
                 if (entity instanceof LivingEntity trappedEntity && entity.getUuid() == blockEntity.getTrappedEntity()){
                     trappedEntity.damage(DamageSource.MAGIC, 1);
+                    //TODO: add a clean way to "trap" entities
                 }
             }
         }
