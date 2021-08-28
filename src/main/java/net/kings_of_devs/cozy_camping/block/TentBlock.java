@@ -25,7 +25,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
 
 public class TentBlock extends Block {
     private static final VoxelShape NORTH_SHAPE;

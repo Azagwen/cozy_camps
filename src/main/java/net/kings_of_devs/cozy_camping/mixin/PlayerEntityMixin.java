@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(PlayerEntity.class)
-public abstract class PlayerEntityMixin {
+public class PlayerEntityMixin {
     private final PlayerEntity self = (PlayerEntity) (Object) this;
 
     @ModifyArg(method = "tickMovement", at =
