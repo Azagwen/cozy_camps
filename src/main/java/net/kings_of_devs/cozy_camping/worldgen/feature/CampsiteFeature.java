@@ -2,12 +2,14 @@ package net.kings_of_devs.cozy_camping.worldgen.feature;
 
 import com.mojang.serialization.Codec;
 import net.kings_of_devs.cozy_camping.worldgen.structure.CampsiteGenerator;
+import net.minecraft.server.command.LocateCommand;
 import net.minecraft.structure.MarginedStructureStart;
 import net.minecraft.structure.StructureManager;
 import net.minecraft.structure.StructurePiece;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.world.HeightLimitView;
+import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.gen.ChunkRandom;
@@ -36,7 +38,7 @@ public class CampsiteFeature extends StructureFeature<DefaultFeatureConfig> {
         public void init(DynamicRegistryManager dynamicRegistryManager, ChunkGenerator chunkGenerator, StructureManager structureManager, ChunkPos chunkPos, Biome biome, DefaultFeatureConfig defaultFeatureConfig, HeightLimitView heightLimitView) {
             int x = (chunkPos.x << 4) + 7;
             int z = (chunkPos.z << 4) + 7;
-            int y = random.nextInt(64) + 64;
+            int y = chunkGenerator.getHeightOnGround(x, z, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
 
             int widthRadiusX = random.nextInt(6) + 6;
             int widthRadiusZ = random.nextInt(6) + 6;
