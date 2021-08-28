@@ -1,82 +1,91 @@
 package net.kings_of_devs.cozy_camping.block;
 
-import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
 import net.kings_of_devs.cozy_camping.block.block_entity.TrapBlockEntity;
-import net.kings_of_devs.cozy_camping.mixin.LivingEntityMixin;
+import net.kings_of_devs.cozy_camping.mixin.LivingEntityAccessor;
+import net.kings_of_devs.cozy_camping.mixin.PlayerSpeedDuck;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.entity.mob.PiglinBrain;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
-import net.minecraft.state.property.DirectionProperty;
-import net.minecraft.state.property.IntProperty;
 import net.minecraft.state.property.Properties;
-import net.minecraft.tag.BlockTags;
-import net.minecraft.text.LiteralText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.event.GameEvent;
 import org.jetbrains.annotations.Nullable;
 
 public class TrapBlock extends Block implements BlockEntityProvider {
-    public static final BooleanProperty CLOSED = BooleanProperty.of("closed");
-    public static final VoxelShape OUTLINE = VoxelShapes.cuboid(0f, 0f, 0f, 1f, 0.2f, 1f);
+    public static final BooleanProperty OPEN;
+    public static final VoxelShape SHAPE;
 
     public TrapBlock(Settings settings) {
         super(settings);
-        setDefaultState(getStateManager().getDefaultState().with(CLOSED, false));
+        setDefaultState(getStateManager().getDefaultState().with(OPEN, true));
     }
 
     @Override
-    protected void appendProperties(StateManager.Builder<Block, BlockState> stateManager) {
-        stateManager.add(CLOSED);
+    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+        builder.add(OPEN);
     }
 
     @Override
     public VoxelShape getOutlineShape(BlockState state, BlockView view, BlockPos pos, ShapeContext context) {
-        return OUTLINE;
+        return SHAPE;
     }
 
     @Override
     public void onSteppedOn(World world, BlockPos pos, BlockState state, Entity entity) {
-        TrapBlockEntity blockEntity = (TrapBlockEntity) world.getBlockEntity(pos);
-        if(!world.getBlockState(pos).get(CLOSED)){
-            world.setBlockState(pos, state.with(CLOSED, true));
-            entity.playSound(SoundEvents.BLOCK_ANVIL_BREAK, 1, 1);
-            if(entity instanceof ItemEntity item) item.kill();
-            else if (entity instanceof LivingEntity livingEntity) {
-                blockEntity.setTrappedEntity(livingEntity.getUuid());
-            }
-        } else {
-            if(entity instanceof LivingEntity trappedEntity && entity.getUuid() == blockEntity.getTrappedEntity()){
-                trappedEntity.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOWNESS, 20, 255, true, false));
-                trappedEntity.addStatusEffect(new StatusEffectInstance(StatusEffects.WEAKNESS, 20, 1, true, false));
-                ((LivingEntityMixin) trappedEntity).setJumpingCooldown(60); //this prevents players from jumping when trapped
-                trappedEntity.damage(DamageSource.MAGIC, 1);
+        super.onSteppedOn(world, pos, state, entity);
+    }
+
+    @Override
+    public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
+        var blockEntity = (TrapBlockEntity) world.getBlockEntity(pos);
+        if (entity.getBlockY() >= pos.getY() && entity.getBlockX() == pos.getX() && entity.getBlockZ() == pos.getZ()) {
+            if (world.getBlockState(pos).get(OPEN)) {
+                world.setBlockState(pos, state.with(OPEN, false));
+                world.playSound(null, pos, SoundEvents.BLOCK_COPPER_BREAK, SoundCategory.BLOCKS, 1, 1);
+
+                if (entity instanceof ItemEntity item) {
+                    item.kill();
+                } else if (entity instanceof LivingEntity livingEntity) {
+                    blockEntity.setTrappedEntity(livingEntity.getUuid());
+                }
+            } else {
+                if (entity instanceof LivingEntity trappedEntity && entity.getUuid() == blockEntity.getTrappedEntity()){
+                    trappedEntity.damage(DamageSource.MAGIC, 1);
+                }
             }
         }
+    }
+
+    @Override
+    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+        if(!state.get(OPEN)) {
+            var blockEntity = (TrapBlockEntity) world.getBlockEntity(pos);
+            blockEntity.setTrappedEntity(null);
+            world.setBlockState(pos, state.with(OPEN, true));
+            world.playSound(null, pos, SoundEvents.BLOCK_COPPER_BREAK, SoundCategory.BLOCKS, 1, 1);
+            return ActionResult.SUCCESS;
+        }
+        return ActionResult.FAIL;
+
     }
 
     public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState neighborState, WorldAccess world, BlockPos pos, BlockPos neighborPos) {
@@ -89,11 +98,11 @@ public class TrapBlock extends Block implements BlockEntityProvider {
 
     @Override
     public boolean emitsRedstonePower(BlockState state) {
-        return true;
+        return !state.get(OPEN);
     }
 
     public int getWeakRedstonePower(BlockState state, BlockView world, BlockPos pos, Direction direction) {
-        return world.getBlockState(pos).get(CLOSED) && Direction.UP != direction ? 15 : 0;
+        return world.getBlockState(pos).get(OPEN) && Direction.UP != direction ? 15 : 0;
     }
 
     public int getStrongRedstonePower(BlockState state, BlockView world, BlockPos pos, Direction direction) {
@@ -101,24 +110,12 @@ public class TrapBlock extends Block implements BlockEntityProvider {
     }
 
     @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-        if(state.get(CLOSED)) {
-            TrapBlockEntity blockEntity = (TrapBlockEntity) world.getBlockEntity(pos);
-            blockEntity.setTrappedEntity(null);
-            world.setBlockState(pos, state.with(CLOSED, false));
-            player.playSound(SoundEvents.BLOCK_ANVIL_BREAK, 1, 1);
-
-            return ActionResult.SUCCESS;
-
-        }
-        return ActionResult.FAIL;
-
+    public @Nullable BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+        return new TrapBlockEntity(pos, state);
     }
 
-
-    @Nullable
-    @Override
-    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
-        return new TrapBlockEntity(pos, state);
+    static {
+        OPEN = Properties.OPEN;
+        SHAPE = VoxelShapes.cuboid(0f, 0f, 0f, 1f, 0.2f, 1f);
     }
 }

@@ -1,11 +1,9 @@
 package net.kings_of_devs.cozy_camping.block;
 
-import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.kings_of_devs.cozy_camping.CozyCampingMain;
 import net.minecraft.block.*;
-import net.minecraft.client.render.RenderLayer;
 
 public class BlockRegistry {
 

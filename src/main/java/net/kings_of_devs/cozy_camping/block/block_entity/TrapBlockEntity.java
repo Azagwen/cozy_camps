@@ -1,10 +1,7 @@
 package net.kings_of_devs.cozy_camping.block.block_entity;
 
-import net.kings_of_devs.cozy_camping.block.BlockRegistry;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
 
@@ -21,10 +18,7 @@ public class TrapBlockEntity extends BlockEntity {
     @Override
     public NbtCompound writeNbt(NbtCompound tag) {
         super.writeNbt(tag);
-
-        // Save the current value of the number to the tag
-        tag.putUuid("trapped_entity", entityUUID);
-
+        tag.putUuid("trapped_entity", entityUUID); // Save the current value of the number to the tag
         return tag;
     }
 
