@@ -8,6 +8,7 @@ import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.kings_of_devs.cozy_camping.block.BlockRegistry;
 import net.kings_of_devs.cozy_camping.block.entity.BlockEntityRegistry;
+import net.kings_of_devs.cozy_camping.datagen.recipe.registry.RecipeRegistry;
 import net.kings_of_devs.cozy_camping.dev.AutoJsonWriter;
 import net.kings_of_devs.cozy_camping.entity.SeatEntity;
 import net.kings_of_devs.cozy_camping.group.TabbedItemGroup;
@@ -54,6 +55,7 @@ public class CozyCampingMain implements ModInitializer {
 		Camper.init();
 		BlockEntityRegistry.init();
 		WorldgenMain.init();
+		RecipeRegistry.init();
 
 		CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
 			dispatcher.register(CommandManager.literal("dev_cozy_camping_write_models").executes(context -> {
