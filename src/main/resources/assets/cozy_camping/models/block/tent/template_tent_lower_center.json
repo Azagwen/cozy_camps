@@ -1,0 +1,27 @@
+{
+    "credit": "Made with Blockbench",
+    "ambientocclusion": false,
+    "texture_size": [64, 64],
+    "textures": {
+        "particle": "#texture",
+        "texture": "cozy_camping:blockwhite_tent"
+    },
+    "elements": [
+        {
+            "from": [8, 1, -8],
+            "to": [9, 32, 24],
+            "rotation": {"angle": -45, "axis": "z", "origin": [8, 32, 8], "rescale": true},
+            "faces": {
+                "east": {"uv": [0, 8, 8, 15.75], "texture": "#texture"}
+            }
+        },
+        {
+            "from": [7, 1, -8],
+            "to": [8, 32, 24],
+            "rotation": {"angle": 45, "axis": "z", "origin": [8, 32, 8], "rescale": true},
+            "faces": {
+                "west": {"uv": [0, 8, 8, 15.75], "texture": "#texture"}
+            }
+        }
+    ]
+}

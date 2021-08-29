@@ -1,0 +1,20 @@
+{
+    "ambientocclusion": true,
+    "credit": "Made with Blockbench",
+    "texture_size": [64, 64],
+    "textures": {
+        "particle": "#texture",
+        "texture": "cozy_camping:blockwhite_tent"
+    },
+    "elements": [
+        {
+            "name": "upper_east",
+            "from": [7, 0, 0],
+            "to": [8, 8, 16],
+            "rotation": {"angle": 45, "axis": "z", "origin": [8, 0, 8], "rescale": true},
+            "faces": {
+                "east": {"uv": [2, 2, 6, 4], "texture": "#texture"}
+            }
+        }
+    ]
+}

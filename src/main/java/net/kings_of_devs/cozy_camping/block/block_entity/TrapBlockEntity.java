@@ -8,6 +8,7 @@ import net.minecraft.util.math.BlockPos;
 import java.util.UUID;
 
 public class TrapBlockEntity extends BlockEntity {
+    private static final String TRAPPED_ENTITY = "trapped_entity";
     private UUID entityUUID = null;
 
     public TrapBlockEntity(BlockPos pos, BlockState state) {
@@ -18,7 +19,7 @@ public class TrapBlockEntity extends BlockEntity {
     @Override
     public NbtCompound writeNbt(NbtCompound tag) {
         super.writeNbt(tag);
-        tag.putUuid("trapped_entity", entityUUID); // Save the current value of the number to the tag
+        tag.putUuid(TRAPPED_ENTITY, this.entityUUID); // Save the current value of the number to the tag
         return tag;
     }
 
@@ -26,15 +27,15 @@ public class TrapBlockEntity extends BlockEntity {
     @Override
     public void readNbt(NbtCompound tag) {
         super.readNbt(tag);
-        entityUUID = tag.getUuid("trapped_entity");
+        this.entityUUID = tag.getUuid(TRAPPED_ENTITY);
     }
 
     public void setTrappedEntity(UUID uuid) {
-        entityUUID = uuid;
+        this.entityUUID = uuid;
     }
 
     public UUID getTrappedEntity(){
-        return entityUUID;
+        return this.entityUUID;
     }
 
 }

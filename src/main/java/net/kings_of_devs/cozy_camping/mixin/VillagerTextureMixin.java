@@ -9,7 +9,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(VillagerClothingFeatureRenderer.class)
 public class VillagerTextureMixin {
-    private final VillagerClothingFeatureRenderer self = (VillagerClothingFeatureRenderer) (Object) this;
 
     @Inject(method = "findTexture", at = @At("HEAD"), cancellable = true)
     private void camperTexture(String keyType, Identifier keyId, CallbackInfoReturnable<Identifier> cir){

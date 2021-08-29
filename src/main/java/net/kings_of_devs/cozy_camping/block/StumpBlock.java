@@ -8,10 +8,14 @@ import net.kings_of_devs.cozy_camping.entity.SeatEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
+import net.minecraft.block.Waterloggable;
+import net.minecraft.entity.ai.pathing.NavigationType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.state.StateManager;
+import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.EnumProperty;
+import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
@@ -24,16 +28,21 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 
-import java.util.List;
 import java.util.Map;
 
-public class StumpBlock extends Block {
+public class StumpBlock extends Block implements Waterloggable {
     public static final EnumProperty<StumpShape> SHAPE;
+    public static final BooleanProperty WATERLOGGED;
     private static final Map<StumpShape, VoxelShape> SHAPE_MAP;
 
     public StumpBlock(Settings settings) {
         super(settings);
         this.setDefaultState(this.getStateManager().getDefaultState().with(SHAPE, StumpShape.VERTICAL));
+    }
+
+    @Override
+    public boolean canPathfindThrough(BlockState state, BlockView world, BlockPos pos, NavigationType type) {
+        return false;
     }
 
     @Override
@@ -76,11 +85,6 @@ public class StumpBlock extends Block {
     }
 
     @Override
-    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        builder.add(SHAPE);
-    }
-
-    @Override
     public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState neighborState, WorldAccess world, BlockPos pos, BlockPos neighborPos) {
         if (direction.getAxis() == state.get(SHAPE).getAxis()) {
             return this.getPlacementState(state, world, pos, direction);
@@ -117,8 +121,14 @@ public class StumpBlock extends Block {
         return StumpShape.SHAPE_MAP.get(side) != null ? StumpShape.SHAPE_MAP.get(side) : state.get(SHAPE);
     }
 
+    @Override
+    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+        builder.add(SHAPE, WATERLOGGED);
+    }
+
     static {
         SHAPE = CozyCampProperties.STUMP_SHAPE;
+        WATERLOGGED = Properties.WATERLOGGED;
 
         SHAPE_MAP = Maps.newHashMap();
         SHAPE_MAP.put(StumpShape.VERTICAL, Block.createCuboidShape(3D, 0D, 3D, 13D, 12D, 13D));

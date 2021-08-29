@@ -4,6 +4,7 @@ import net.kings_of_devs.cozy_camping.block.state.CozyCampProperties;
 import net.kings_of_devs.cozy_camping.block.state.TentPiece;
 import net.minecraft.block.*;
 import net.minecraft.block.enums.DoubleBlockHalf;
+import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -13,6 +14,7 @@ import net.minecraft.state.StateManager;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.state.property.EnumProperty;
 import net.minecraft.state.property.Properties;
+import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
@@ -46,10 +48,30 @@ public class TentBlock extends Block {
     public static final DirectionProperty FACING;
     public static final EnumProperty<DoubleBlockHalf> HALF;
     public static final EnumProperty<TentPiece> PIECE;
+    private final DyeColor color;
 
-    public TentBlock(Settings settings) {
+    public TentBlock(DyeColor color, Settings settings) {
         super(settings);
+        this.color = color;
         setDefaultState(this.stateManager.getDefaultState().with(FACING, Direction.NORTH).with(HALF, DoubleBlockHalf.LOWER).with(PIECE, TentPiece.CENTER));
+    }
+
+    public DyeColor getColor() {
+        return color;
+    }
+
+    private void loopThroughSlice(BlockState state, BiConsumer<Integer, Integer> consumer, boolean includeLowestEnds) {
+        var isFacingZ = state.get(FACING).getAxis() == Direction.Axis.Z;
+        var minX = includeLowestEnds ? -1 : ( isFacingZ ? -2 : -1 );
+        var maxX = includeLowestEnds ?  1 : ( isFacingZ ?  2 :  1 );
+        var minZ = includeLowestEnds ? -1 : ( isFacingZ ? -1 : -2 );
+        var maxZ = includeLowestEnds ?  1 : ( isFacingZ ?  1 :  2 );
+
+        for (int x = minX; x <= maxX; x++) { //width
+            for (int z = minZ; z <= maxZ; z++) { //length
+                consumer.accept(x, z);
+            }
+        }
     }
 
     @Override
@@ -61,6 +83,11 @@ public class TentBlock extends Block {
             }
         }
         return value;
+    }
+
+    @Override
+    public PistonBehavior getPistonBehavior(BlockState state) {
+        return PistonBehavior.BLOCK;
     }
 
     @Override
@@ -119,30 +146,17 @@ public class TentBlock extends Block {
         }
     }
 
-    private void loopThroughSlice(BlockState state, BiConsumer<Integer, Integer> consumer, boolean includeLowestEnds) {
-        var isFacingZ = state.get(FACING).getAxis() == Direction.Axis.Z;
-        var minX = includeLowestEnds ? -1 : ( isFacingZ ? -2 : -1 );
-        var maxX = includeLowestEnds ?  1 : ( isFacingZ ?  2 :  1 );
-        var minZ = includeLowestEnds ? -1 : ( isFacingZ ? -1 : -2 );
-        var maxZ = includeLowestEnds ?  1 : ( isFacingZ ?  1 :  2 );
-
-        for (int x = minX; x <= maxX; x++) { //width
-            for (int z = minZ; z <= maxZ; z++) { //length
-                consumer.accept(x, z);
-            }
-        }
-    }
-
     @Override
     public boolean canPlaceAt(BlockState state, WorldView world, BlockPos pos) {
         var canPlace = new AtomicBoolean(true);
         //Check Lower half and Floor validity
         this.loopThroughSlice(state, (x, z) -> {
             var newPos = pos.offset(Direction.Axis.X, x).offset(Direction.Axis.Z, z);
+            var downState = world.getBlockState(newPos.down());
             if (!world.getBlockState(newPos).isAir())
                 canPlace.set(false);
-            if (!world.getBlockState(newPos.down()).isSideSolidFullSquare(world, newPos.down(), Direction.UP))
-                canPlace.set(!world.getBlockState(newPos.down()).isSideSolidFullSquare(world, newPos.down(), Direction.UP));
+            if (!downState.isSideSolidFullSquare(world, newPos.down(), Direction.UP) && !downState.isOf(this.asBlock()))
+                canPlace.set(false);
         }, false);
         //Check Upper half
         this.loopThroughSlice(state, (x, z) -> {
@@ -183,7 +197,7 @@ public class TentBlock extends Block {
     private void breakFromLowestSide(World world, BlockPos pos, PlayerEntity player, Direction direction, TentPiece piece) {
         var posToCheck = pos.offset(direction);
         var stateToCheck = world.getBlockState(posToCheck);
-        if (stateToCheck.getBlock() instanceof TentBlock && stateToCheck.get(PIECE) == piece) {
+        if (stateToCheck.isOf(this.asBlock()) && stateToCheck.get(PIECE) == piece) {
             this.checkBlocksAroundAndTryBreak(stateToCheck, posToCheck, world, player);
         }
     }
@@ -192,7 +206,7 @@ public class TentBlock extends Block {
         this.loopThroughSlice(state, (x, z) -> {
             var newPos = pos.offset(Direction.Axis.X, x).offset(Direction.Axis.Z, z);
             var foundState = world.getBlockState(newPos);
-            if (foundState.getBlock() instanceof TentBlock && foundState.get(PIECE) == TentPiece.CENTER) {
+            if (foundState.isOf(this.asBlock()) && foundState.get(PIECE) == TentPiece.CENTER) {
                 var half = foundState.get(HALF) == DoubleBlockHalf.UPPER ? Direction.DOWN : Direction.UP;
                 this.breakFromMiddle(state, half, world, newPos, player);
             }
@@ -204,10 +218,10 @@ public class TentBlock extends Block {
         var basePos = pos.offset(half);
         this.loopThroughSlice(state, (x, z) -> {
             var newPos = basePos.offset(Direction.Axis.X, x).offset(Direction.Axis.Z, z);
-            if (world.getBlockState(newPos).getBlock() instanceof TentBlock) {
+            if (world.getBlockState(newPos).isOf(this.asBlock())) {
                 this.breakBlock(world,newPos, canLoot, player);
             }
-            if (world.getBlockState(newPos.offset(half.getOpposite())).getBlock() instanceof TentBlock) {
+            if (world.getBlockState(newPos.offset(half.getOpposite())).isOf(this.asBlock())) {
                 this.breakBlock(world, newPos.offset(half.getOpposite()), canLoot, player);
             }
         }, false);

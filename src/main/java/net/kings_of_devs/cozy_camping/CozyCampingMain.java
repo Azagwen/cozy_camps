@@ -3,6 +3,7 @@ package net.kings_of_devs.cozy_camping;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
@@ -11,6 +12,7 @@ import net.kings_of_devs.cozy_camping.block.BlockRegistry;
 import net.kings_of_devs.cozy_camping.block.TrapBlock;
 import net.kings_of_devs.cozy_camping.block.block_entity.BlockEntityRegistry;
 import net.kings_of_devs.cozy_camping.block.block_entity.TrapBlockEntity;
+import net.kings_of_devs.cozy_camping.dev.AutoJsonWriter;
 import net.kings_of_devs.cozy_camping.entity.SeatEntity;
 import net.kings_of_devs.cozy_camping.group.TabbedItemGroup;
 import net.kings_of_devs.cozy_camping.item.ItemRegistry;
@@ -27,6 +29,7 @@ import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.DefaultAttributeRegistry;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.item.Item;
+import net.minecraft.server.command.CommandManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import org.apache.logging.log4j.LogManager;
@@ -57,6 +60,13 @@ public class CozyCampingMain implements ModInitializer {
 		Camper.init();
 		BlockEntityRegistry.init();
 		WorldgenMain.init();
+
+		CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
+			dispatcher.register(CommandManager.literal("dev_cozy_camping_write_models").executes(context -> {
+				AutoJsonWriter.writeAll();
+				return 1;
+			}));
+		});
 
 		//Registers the Stump Seat entity.
 		Registry.register(Registry.ENTITY_TYPE, id("seat"), SEAT);

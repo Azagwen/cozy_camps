@@ -1,0 +1,6 @@
+{
+  "parent": "cozy_camping:block/tent/template_tent_lowest_lower_south_east",
+  "textures": {
+    "texture": "cozy_camping:block/white_tent"
+  }
+}

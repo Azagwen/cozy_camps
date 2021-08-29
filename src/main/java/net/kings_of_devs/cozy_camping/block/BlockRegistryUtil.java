@@ -4,8 +4,10 @@ import net.kings_of_devs.cozy_camping.CozyCampingMain;
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
+import net.minecraft.util.DyeColor;
 import net.minecraft.util.registry.Registry;
 
+import java.util.Map;
 import java.util.Set;
 
 public class BlockRegistryUtil {
@@ -47,5 +49,11 @@ public class BlockRegistryUtil {
     protected static <B extends Block> void registerBlock(Set<Item> itemGroupTab, String path, B block) {
         var item = new BlockItem(block, new Item.Settings());
         registerBlock(itemGroupTab, path, block, item);
+    }
+
+    protected static <B extends Block> void registerColoredBlocks(Set<Item> itemGroupTab, String name, Map<DyeColor, B> blockMap) {
+        for (var entry : blockMap.entrySet()) {
+            registerBlock(itemGroupTab, entry.getKey().getName()+"_"+name, entry.getValue());
+        }
     }
 }

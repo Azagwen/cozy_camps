@@ -1,0 +1,21 @@
+{
+    "ambientocclusion": true,
+    "credit": "Made with Blockbench",
+    "texture_size": [64, 64],
+    "textures": {
+        "particle": "#texture",
+        "texture": "cozy_camping:blockwhite_tent"
+    },
+    "elements": [
+        {
+            "name": "lowest_lower_west",
+            "from": [16, 1, 0],
+            "to": [17, 8, 16],
+            "rotation": {"angle": -45, "axis": "z", "origin": [16, 8, 8], "rescale": true},
+            "faces": {
+                "west": {"uv": [2, 6, 6, 7.75], "texture": "#texture"},
+                "down": {"uv": [2, 7.5, 6, 7.75], "rotation": 270, "texture": "#texture"}
+            }
+        }
+    ]
+}

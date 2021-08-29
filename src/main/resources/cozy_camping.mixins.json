@@ -4,9 +4,10 @@
     "package": "net.kings_of_devs.cozy_camping.mixin",
     "compatibilityLevel": "JAVA_16",
     "mixins": [
-        "LivingEntityAccessor",
         "PlayerEntityMixin",
-        "VillagerTextureMixin"
+        "VillagerTextureMixin",
+        "accessor.BedBlockAccessor",
+        "accessor.LivingEntityAccessor"
     ],
     "client": [
         "client.CreativeInventoryScreenMixin"
