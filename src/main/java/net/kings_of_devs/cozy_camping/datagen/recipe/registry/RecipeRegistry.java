@@ -53,6 +53,7 @@ public class RecipeRegistry {
 
     public static void init() {
         //Unique patterns
+        registerTentRecipes();
         registerMisc();
 
         //Other Types
@@ -62,10 +63,7 @@ public class RecipeRegistry {
         LOGGER.info("ATBYW Recipes Inintiliazed");
     }
 
-    private static void registerMisc() {
-        var keys = HashMultimap.<Character, Ingredient>create();
-        var recipeData = (RecipeData) null;
-
+    private static void registerTentRecipes() {
         var tentMap = Maps.<RecipeData, ItemConvertible>newHashMap();
         tentMap.put(new RecipeData("tents", "tents", BlockRegistry.WHITE_TENT, 1), Blocks.WHITE_WOOL);
         tentMap.put(new RecipeData("tents", "tents", BlockRegistry.ORANGE_TENT, 1), Blocks.ORANGE_WOOL);
@@ -84,13 +82,16 @@ public class RecipeRegistry {
         tentMap.put(new RecipeData("tents", "tents", BlockRegistry.RED_TENT, 1), Blocks.RED_WOOL);
         tentMap.put(new RecipeData("tents", "tents", BlockRegistry.BLACK_TENT, 1), Blocks.BLACK_WOOL);
         for (var entry : tentMap.entrySet()) {
-            keys.clear();
+            var keys = HashMultimap.<Character, Ingredient>create();
             keys.put('W', Ingredient.ofItems(entry.getValue()));
             keys.put('S', Ingredient.ofItems(Items.STICK));
             registerShapedRecipe(entry.getKey(), new String[] {"WWW", "WSW", "SSS"}, keys);
         }
+    }
 
-
+    private static void registerMisc() {
+        var keys = HashMultimap.<Character, Ingredient>create();
+        var recipeData = (RecipeData) null;
 
         //Example of recipe
         //keys.clear();
