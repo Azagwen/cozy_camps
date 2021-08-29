@@ -25,7 +25,7 @@ public class TrappedStatusEffect extends StatusEffect {
     @Override
     public void applyUpdateEffect(LivingEntity entity, int amplifier) {
         if (entity.world.getBlockState(entity.getBlockPos()).isOf(BlockRegistry.BEAR_TRAP)) {
-            entity.damage(DamageSource.MAGIC, 2);
+            entity.damage(CozyCampingMain.TRAP, 2);
             ((LivingEntityAccessor) entity).setJumpingCooldown(60);
         } else {
             this.canApplyEffect = false;
