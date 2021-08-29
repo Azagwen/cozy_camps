@@ -1,59 +1,31 @@
 package net.kings_of_devs.cozy_camping.block;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.kings_of_devs.cozy_camping.CozyCampingMain;
 import net.minecraft.block.*;
+import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.DyeColor;
 
+import java.util.Set;
+
 public class BlockRegistry {
+    public static final Set<Block> TENTS = Sets.newHashSet();
 
     private static Block createStump(Block copiedBlock) {
         var material = copiedBlock.getDefaultState().getMaterial();
-        return new StumpBlock(FabricBlockSettings.of(material, copiedBlock.getDefaultMapColor()).breakByTool(FabricToolTags.AXES));
+        return new StumpBlock(FabricBlockSettings.of(material, copiedBlock.getDefaultMapColor()).breakByTool(FabricToolTags.AXES).sounds(BlockSoundGroup.WOOD));
     }
 
-    private static Block createTent(DyeColor color, boolean ripped) {
-        return new TentBlock(color, FabricBlockSettings.of(Material.WOOL, color.getMapColor()).nonOpaque());
+    private static Block createTent(DyeColor color) {
+        var block = new TentBlock(color, FabricBlockSettings.of(Material.WOOL, color.getMapColor()).sounds(BlockSoundGroup.WOOD).nonOpaque());
+        TENTS.add(block);
+        return block;
     }
 
     public static final Block CHARCOAL_BLOCK = new Block(FabricBlockSettings.copyOf(Blocks.COAL_BLOCK).requiresTool().breakByTool(FabricToolTags.PICKAXES));
-
-    public static final Block WHITE_TENT = createTent(DyeColor.WHITE, false);
-    public static final Block ORANGE_TENT = createTent(DyeColor.ORANGE, false);
-    public static final Block MAGENTA_TENT = createTent(DyeColor.MAGENTA, false);
-    public static final Block LIGHT_BLUE_TENT = createTent(DyeColor.LIGHT_BLUE, false);
-    public static final Block YELLOW_TENT = createTent(DyeColor.YELLOW, false);
-    public static final Block LIME_TENT = createTent(DyeColor.LIME, false);
-    public static final Block PINK_TENT = createTent(DyeColor.PINK, false);
-    public static final Block GRAY_TENT = createTent(DyeColor.GRAY, false);
-    public static final Block LIGHT_GRAY_TENT = createTent(DyeColor.LIGHT_GRAY, false);
-    public static final Block CYAN_TENT = createTent(DyeColor.CYAN, false);
-    public static final Block PURPLE_TENT = createTent(DyeColor.PURPLE, false);
-    public static final Block BLUE_TENT = createTent(DyeColor.BLUE, false);
-    public static final Block BROWN_TENT = createTent(DyeColor.BROWN, false);
-    public static final Block GREEN_TENT = createTent(DyeColor.GREEN, false);
-    public static final Block RED_TENT = createTent(DyeColor.RED, false);
-    public static final Block BLACK_TENT = createTent(DyeColor.BLACK, false);
-
-    public static final Block WHITE_RIPPED_TENT = createTent(DyeColor.WHITE, true);
-    public static final Block ORANGE_RIPPED_TENT = createTent(DyeColor.ORANGE, true);
-    public static final Block MAGENTA_RIPPED_TENT = createTent(DyeColor.MAGENTA, true);
-    public static final Block LIGHT_BLUE_RIPPED_TENT = createTent(DyeColor.LIGHT_BLUE, true);
-    public static final Block YELLOW_RIPPED_TENT = createTent(DyeColor.YELLOW, true);
-    public static final Block LIME_RIPPED_TENT = createTent(DyeColor.LIME, true);
-    public static final Block PINK_RIPPED_TENT = createTent(DyeColor.PINK, true);
-    public static final Block GRAY_RIPPED_TENT = createTent(DyeColor.GRAY, true);
-    public static final Block LIGHT_GRAY_RIPPED_TENT = createTent(DyeColor.LIGHT_GRAY, true);
-    public static final Block CYAN_RIPPED_TENT = createTent(DyeColor.CYAN, true);
-    public static final Block PURPLE_RIPPED_TENT = createTent(DyeColor.PURPLE, true);
-    public static final Block BLUE_RIPPED_TENT = createTent(DyeColor.BLUE, true);
-    public static final Block BROWN_RIPPED_TENT = createTent(DyeColor.BROWN, true);
-    public static final Block GREEN_RIPPED_TENT = createTent(DyeColor.GREEN, true);
-    public static final Block RED_RIPPED_TENT = createTent(DyeColor.RED, true);
-    public static final Block BLACK_RIPPED_TENT = createTent(DyeColor.BLACK, true);
-
-    public static final Block FANCY_TENT = new TentBlock(DyeColor.WHITE, FabricBlockSettings.copyOf(Blocks.WHITE_WOOL).nonOpaque());
 
     public static final Block OAK_STUMP = createStump(Blocks.OAK_PLANKS);
     public static final Block SPRUCE_STUMP = createStump(Blocks.SPRUCE_PLANKS);
@@ -63,6 +35,44 @@ public class BlockRegistry {
     public static final Block DARK_OAK_STUMP = createStump(Blocks.DARK_OAK_PLANKS);
     public static final Block CRIMSON_STUMP = createStump(Blocks.CRIMSON_PLANKS);
     public static final Block WARPED_STUMP = createStump(Blocks.WARPED_PLANKS);
+
+    public static final Block WHITE_TENT = createTent(DyeColor.WHITE);
+    public static final Block ORANGE_TENT = createTent(DyeColor.ORANGE);
+    public static final Block MAGENTA_TENT = createTent(DyeColor.MAGENTA);
+    public static final Block LIGHT_BLUE_TENT = createTent(DyeColor.LIGHT_BLUE);
+    public static final Block YELLOW_TENT = createTent(DyeColor.YELLOW);
+    public static final Block LIME_TENT = createTent(DyeColor.LIME);
+    public static final Block PINK_TENT = createTent(DyeColor.PINK);
+    public static final Block GRAY_TENT = createTent(DyeColor.GRAY);
+    public static final Block LIGHT_GRAY_TENT = createTent(DyeColor.LIGHT_GRAY);
+    public static final Block CYAN_TENT = createTent(DyeColor.CYAN);
+    public static final Block PURPLE_TENT = createTent(DyeColor.PURPLE);
+    public static final Block BLUE_TENT = createTent(DyeColor.BLUE);
+    public static final Block BROWN_TENT = createTent(DyeColor.BROWN);
+    public static final Block GREEN_TENT = createTent(DyeColor.GREEN);
+    public static final Block RED_TENT = createTent(DyeColor.RED);
+    public static final Block BLACK_TENT = createTent(DyeColor.BLACK);
+
+    public static final Block WHITE_RIPPED_TENT = createTent(DyeColor.WHITE);
+    public static final Block ORANGE_RIPPED_TENT = createTent(DyeColor.ORANGE);
+    public static final Block MAGENTA_RIPPED_TENT = createTent(DyeColor.MAGENTA);
+    public static final Block LIGHT_BLUE_RIPPED_TENT = createTent(DyeColor.LIGHT_BLUE);
+    public static final Block YELLOW_RIPPED_TENT = createTent(DyeColor.YELLOW);
+    public static final Block LIME_RIPPED_TENT = createTent(DyeColor.LIME);
+    public static final Block PINK_RIPPED_TENT = createTent(DyeColor.PINK);
+    public static final Block GRAY_RIPPED_TENT = createTent(DyeColor.GRAY);
+    public static final Block LIGHT_GRAY_RIPPED_TENT = createTent(DyeColor.LIGHT_GRAY);
+    public static final Block CYAN_RIPPED_TENT = createTent(DyeColor.CYAN);
+    public static final Block PURPLE_RIPPED_TENT = createTent(DyeColor.PURPLE);
+    public static final Block BLUE_RIPPED_TENT = createTent(DyeColor.BLUE);
+    public static final Block BROWN_RIPPED_TENT = createTent(DyeColor.BROWN);
+    public static final Block GREEN_RIPPED_TENT = createTent(DyeColor.GREEN);
+    public static final Block RED_RIPPED_TENT = createTent(DyeColor.RED);
+    public static final Block BLACK_RIPPED_TENT = createTent(DyeColor.BLACK);
+
+    public static final Block FANCY_TENT = new TentBlock(DyeColor.WHITE, FabricBlockSettings.copyOf(Blocks.WHITE_WOOL).nonOpaque());
+
+    public static final Block SLEEPING_BAG = new Block(FabricBlockSettings.copyOf(OAK_STUMP));
 
     public static final Block BEAR_TRAP = new TrapBlock(FabricBlockSettings.copyOf(Blocks.IRON_BLOCK).requiresTool().breakByTool(FabricToolTags.PICKAXES).nonOpaque());
 
@@ -77,6 +87,15 @@ public class BlockRegistry {
 
     public static void init() {
         BlockRegistryUtil.registerBlock(CozyCampingMain.BLOCKS_TAB, "charcoal_block", CHARCOAL_BLOCK);
+
+        BlockRegistryUtil.registerBlock(CozyCampingMain.BLOCKS_TAB, "oak_stump", OAK_STUMP);
+        BlockRegistryUtil.registerBlock(CozyCampingMain.BLOCKS_TAB, "spruce_stump", SPRUCE_STUMP);
+        BlockRegistryUtil.registerBlock(CozyCampingMain.BLOCKS_TAB, "birch_stump", BIRCH_STUMP);
+        BlockRegistryUtil.registerBlock(CozyCampingMain.BLOCKS_TAB, "jungle_stump", JUNGLE_STUMP);
+        BlockRegistryUtil.registerBlock(CozyCampingMain.BLOCKS_TAB, "acacia_stump", ACACIA_STUMP);
+        BlockRegistryUtil.registerBlock(CozyCampingMain.BLOCKS_TAB, "dark_oak_stump", DARK_OAK_STUMP);
+        BlockRegistryUtil.registerBlock(CozyCampingMain.BLOCKS_TAB, "crimson_stump", CRIMSON_STUMP);
+        BlockRegistryUtil.registerBlock(CozyCampingMain.BLOCKS_TAB, "warped_stump", WARPED_STUMP);
 
         BlockRegistryUtil.registerBlock(CozyCampingMain.BLOCKS_TAB, "white_tent", WHITE_TENT);
         BlockRegistryUtil.registerBlock(CozyCampingMain.BLOCKS_TAB, "orange_tent", ORANGE_TENT);
@@ -114,14 +133,7 @@ public class BlockRegistry {
 
         BlockRegistryUtil.registerBlock(CozyCampingMain.BLOCKS_TAB, "fancy_tent", FANCY_TENT);
 
-        BlockRegistryUtil.registerBlock(CozyCampingMain.BLOCKS_TAB, "oak_stump", OAK_STUMP);
-        BlockRegistryUtil.registerBlock(CozyCampingMain.BLOCKS_TAB, "spruce_stump", SPRUCE_STUMP);
-        BlockRegistryUtil.registerBlock(CozyCampingMain.BLOCKS_TAB, "birch_stump", BIRCH_STUMP);
-        BlockRegistryUtil.registerBlock(CozyCampingMain.BLOCKS_TAB, "jungle_stump", JUNGLE_STUMP);
-        BlockRegistryUtil.registerBlock(CozyCampingMain.BLOCKS_TAB, "acacia_stump", ACACIA_STUMP);
-        BlockRegistryUtil.registerBlock(CozyCampingMain.BLOCKS_TAB, "dark_oak_stump", DARK_OAK_STUMP);
-        BlockRegistryUtil.registerBlock(CozyCampingMain.BLOCKS_TAB, "crimson_stump", CRIMSON_STUMP);
-        BlockRegistryUtil.registerBlock(CozyCampingMain.BLOCKS_TAB, "warped_stump", WARPED_STUMP);
+        BlockRegistryUtil.registerBlock(CozyCampingMain.BLOCKS_TAB, "sleeping_bag", SLEEPING_BAG);
 
         BlockRegistryUtil.registerBlock(CozyCampingMain.BLOCKS_TAB, "bear_trap", BEAR_TRAP);
 

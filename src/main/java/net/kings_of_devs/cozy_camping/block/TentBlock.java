@@ -1,8 +1,10 @@
 package net.kings_of_devs.cozy_camping.block;
 
+import net.kings_of_devs.cozy_camping.block.entity.TentBlockEntity;
 import net.kings_of_devs.cozy_camping.block.state.CozyCampProperties;
 import net.kings_of_devs.cozy_camping.block.state.TentPiece;
 import net.minecraft.block.*;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.enums.DoubleBlockHalf;
 import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.entity.Entity;
@@ -11,6 +13,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.StateManager;
+import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.state.property.EnumProperty;
 import net.minecraft.state.property.Properties;
@@ -28,7 +31,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;
 
-public class TentBlock extends Block {
+public class TentBlock extends BlockWithEntity {
     private static final VoxelShape NORTH_SHAPE;
     private static final VoxelShape SOUTH_SHAPE;
     private static final VoxelShape EAST_SHAPE;
@@ -48,13 +51,91 @@ public class TentBlock extends Block {
     public static final DirectionProperty FACING;
     public static final EnumProperty<DoubleBlockHalf> HALF;
     public static final EnumProperty<TentPiece> PIECE;
+    public static final BooleanProperty LEFT_OCCUPIED;
+    public static final BooleanProperty RIGHT_OCCUPIED;
+    public static final BooleanProperty HAS_LEFT_BAG;
+    public static final BooleanProperty HAS_RIGHT_BAG;
     private final DyeColor color;
 
     public TentBlock(DyeColor color, Settings settings) {
         super(settings);
         this.color = color;
-        setDefaultState(this.stateManager.getDefaultState().with(FACING, Direction.NORTH).with(HALF, DoubleBlockHalf.LOWER).with(PIECE, TentPiece.CENTER));
+        setDefaultState(this.stateManager.getDefaultState()
+                .with(FACING, Direction.NORTH)
+                .with(HALF, DoubleBlockHalf.LOWER)
+                .with(PIECE, TentPiece.CENTER)
+                .with(LEFT_OCCUPIED, false)
+                .with(RIGHT_OCCUPIED, false)
+                .with(HAS_LEFT_BAG, false)
+                .with(HAS_RIGHT_BAG, false)
+        );
     }
+
+    @Override
+    public BlockRenderType getRenderType(BlockState state) {
+        return BlockRenderType.MODEL;
+    }
+
+    @Nullable
+    @Override
+    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+        if (state.get(PIECE) == TentPiece.CENTER && state.get(HALF) == DoubleBlockHalf.LOWER) {
+            return new TentBlockEntity(pos, state, this.color);
+        }
+        return null;
+    }
+
+    @Nullable
+    public static Direction getDirection(BlockView world, BlockPos pos) {
+        var state = world.getBlockState(pos);
+        return state.getBlock() instanceof TentBlock ? state.get(FACING).getOpposite() : null;
+    }
+
+    /**
+     *  Way too buggy for now
+     */
+//    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+//        if (player.getMainHandStack().isOf(BlockRegistry.SLEEPING_BAG.asItem())) {
+//            if (state.get(HAS_LEFT_BAG) && state.get(HAS_RIGHT_BAG)) {
+//                return ActionResult.PASS;
+//            } else {
+//                var newPos = state.get(HALF) == DoubleBlockHalf.LOWER ? pos : pos.down();
+//                if (state.get(HAS_LEFT_BAG)) {
+//                    this.trySetBag(world, newPos, state, state.with(HAS_RIGHT_BAG, true));
+//                } else {
+//                    this.trySetBag(world, newPos, state, state.with(HAS_LEFT_BAG, true));
+//                }
+//                player.getMainHandStack().decrement(1);
+//            }
+//        }
+//        if (world.isClient) {
+//            return ActionResult.CONSUME;
+//        } else {
+//            var actionResult = new AtomicReference<ActionResult>();
+//            this.loopThroughSlice(state, (x, z) -> {
+//                var newPos = pos.offset(Direction.Axis.X, x).offset(Direction.Axis.Z, z);
+//                var foundState = world.getBlockState(newPos);
+//                if (foundState.isOf(this.asBlock()) && foundState.get(PIECE) == TentPiece.CENTER) {
+//                    newPos = foundState.get(HALF) == DoubleBlockHalf.LOWER ? newPos : newPos.down();
+
+//                    if (!world.getDimension().isBedWorking()) {
+//                        player.sendMessage(new TranslatableText("block." + CozyCampingMain.MOD_ID + ".tent.cannot_use"), true);
+//                        actionResult.set(ActionResult.PASS);
+//                    } else {
+//                        var playerDuck = (PlayerEntityDuck) player;
+//                        if (state.get(LEFT_OCCUPIED) && state.get(RIGHT_OCCUPIED)) {
+//                            player.sendMessage(new TranslatableText("block." + CozyCampingMain.MOD_ID + ".tent.full"), true);
+//                            actionResult.set(ActionResult.PASS);
+//                        } else {
+//                            playerDuck.sleepFromTent(newPos, !state.get(LEFT_OCCUPIED));
+//                            actionResult.set(ActionResult.SUCCESS);
+//                        }
+//                    }
+//                }
+//            }, false);
+//            return actionResult.get();
+//        }
+//    }
 
     public DyeColor getColor() {
         return color;
@@ -331,13 +412,17 @@ public class TentBlock extends Block {
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        builder.add(FACING, HALF, PIECE);
+        builder.add(FACING, HALF, PIECE, LEFT_OCCUPIED, RIGHT_OCCUPIED, HAS_LEFT_BAG, HAS_RIGHT_BAG);
     }
 
     static {
         HALF = Properties.DOUBLE_BLOCK_HALF;
         FACING = Properties.HORIZONTAL_FACING;
         PIECE = CozyCampProperties.TENT_PIECE;
+        LEFT_OCCUPIED = CozyCampProperties.LEFT_OCCUPIED;
+        RIGHT_OCCUPIED = CozyCampProperties.RIGHT_OCCUPIED;
+        HAS_LEFT_BAG = CozyCampProperties.HAS_LEFT_BAG;
+        HAS_RIGHT_BAG = CozyCampProperties.HAS_RIGHT_BAG;
         UPPER_NORTH_EAST_SHAPE = Block.createCuboidShape(0D, 0D, 8D, 08D, 8D, 16D);
         UPPER_NORTH_WEST_SHAPE = Block.createCuboidShape(8D, 0D, 8D, 16D, 8D, 16D);
         UPPER_SOUTH_EAST_SHAPE = Block.createCuboidShape(0D, 0D, 0D, 08D, 8D, 08D);

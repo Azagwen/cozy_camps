@@ -1,5 +1,6 @@
 package net.kings_of_devs.cozy_camping.dev;
 
+import com.google.common.collect.Maps;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import net.kings_of_devs.cozy_camping.CozyCampingMain;
@@ -47,26 +48,34 @@ public class AutoJsonWriter {
         }
     }
 
-    public static void writeAll() {
+    private static void writeTents(boolean ripped) {
         var writer = new AutoJsonWriter();
-        for (var piece : TentPiece.values()) {
-            for (var color : DyeColor.values()) {
-                var root = "cozy_camping:block/tent/";
-                var textures = Map.ofEntries(
-                        Map.entry("texture", "cozy_camping:block/" + color + "_tent")
-                );
-                if (piece.asString().contains("lowest")) {
-                    var parent = root + "template_tent_lowest_lower_" + piece.asString().replace("_lowest", "");
-                    var model = ModelMethods.modelFromParent(parent, textures);
-                    writer.write(color.getName() + "_tent_lowest_lower_" + piece.asString(), model);
-                }
-                var lowerModel = ModelMethods.modelFromParent(root + "template_tent_lower_" + piece.asString(), textures);
-                var upperModel = ModelMethods.modelFromParent(root + "template_tent_upper_" + piece.asString(), textures);
+        var modelsFolder = "models/block/tent/";
 
-                writer.write(color.getName() + "_tent_lower_" + piece.asString(), lowerModel);
-                writer.write(color.getName() + "_tent_upper_" + piece.asString(), upperModel);
+        for (var color : DyeColor.values()) {
+            for (var piece : TentPiece.values()) {
+                var root = "cozy_camping:block/tent/";
+                var name = ripped ? "ripped_tent" : "tent";
+                var texture = Map.ofEntries(Map.entry("texture", "cozy_camping:block/" + color + "_" + name));
+
+                if (piece.asString().contains("lowest")) {
+                    var newPiece = piece.asString().replace("_lowest", "");
+                    var parent = root + "template_tent_lowest_lower_" + newPiece;
+                    var model = ModelMethods.modelFromParent(parent, texture);
+                    writer.write(modelsFolder + color.getName() + "_" + name + "_lowest_lower_" + newPiece, model);
+                } else {
+                    var lowerModel = ModelMethods.modelFromParent(root + "template_tent_lower_" + piece.asString(), texture);
+                    var upperModel = ModelMethods.modelFromParent(root + "template_tent_upper_" + piece.asString(), texture);
+                    writer.write(modelsFolder + color.getName() + "_" + name + "_lower_" + piece.asString(), lowerModel);
+                    writer.write(modelsFolder + color.getName() + "_" + name + "_upper_" + piece.asString(), upperModel);
+                }
             }
         }
+    }
+
+    public static void writeAll() {
+        writeTents(false);
+        writeTents(true);
 
         CozyCampingMain.LOGGER.info("JSON files successfully written");
     }
