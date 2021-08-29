@@ -10,7 +10,9 @@
         "PlayerEntityMixin",
         "VillagerTextureMixin",
         "accessor.BedBlockAccessor",
-        "accessor.LivingEntityAccessor"
+        "accessor.LivingEntityAccessor",
+        "accessor.ShapedRecipeAccessor",
+        "datagen.ServerAdvancementLoaderMixin"
     ],
     "client": [
         "client.CreativeInventoryScreenMixin"

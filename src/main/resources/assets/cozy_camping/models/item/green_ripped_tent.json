@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "cozy_camping:item/marshmallow"
+    "layer0": "cozy_camping:item/green_ripped_tent"
   }
 }

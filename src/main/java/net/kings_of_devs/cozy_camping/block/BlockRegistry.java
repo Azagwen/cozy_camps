@@ -72,7 +72,7 @@ public class BlockRegistry {
 
     public static final Block FANCY_TENT = new TentBlock(DyeColor.WHITE, FabricBlockSettings.copyOf(Blocks.WHITE_WOOL).nonOpaque());
 
-    public static final Block SLEEPING_BAG = new Block(FabricBlockSettings.copyOf(OAK_STUMP));
+    public static final Block SLEEPING_BAG = new SleepingBagBlock(FabricBlockSettings.copyOf(OAK_STUMP));
 
     public static final Block BEAR_TRAP = new TrapBlock(FabricBlockSettings.copyOf(Blocks.IRON_BLOCK).requiresTool().breakByTool(FabricToolTags.PICKAXES).nonOpaque());
 

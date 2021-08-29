@@ -73,9 +73,24 @@ public class AutoJsonWriter {
         }
     }
 
+    private static void writeTentItems(boolean ripped) {
+        var writer = new AutoJsonWriter();
+        var modelsFolder = "models/item/";
+
+        for (var color : DyeColor.values()) {
+            var name = ripped ? "ripped_tent" : "tent";
+            var texture = Map.ofEntries(Map.entry("layer0", "cozy_camping:item/" + color + "_" + name));
+
+            var model = ModelMethods.modelFromParent("item/generated", texture);
+            writer.write(modelsFolder + color.getName() + "_" + name, model);
+        }
+    }
+
     public static void writeAll() {
         writeTents(false);
         writeTents(true);
+        writeTentItems(false);
+        writeTentItems(true);
 
         CozyCampingMain.LOGGER.info("JSON files successfully written");
     }
