@@ -12,6 +12,7 @@
         "accessor.BedBlockAccessor",
         "accessor.LivingEntityAccessor",
         "accessor.ShapedRecipeAccessor",
+        "datagen.RecipeManagerMixin",
         "datagen.ServerAdvancementLoaderMixin"
     ],
     "client": [

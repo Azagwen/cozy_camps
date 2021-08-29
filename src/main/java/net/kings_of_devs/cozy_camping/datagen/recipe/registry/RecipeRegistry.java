@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import net.kings_of_devs.cozy_camping.CozyCampingMain;
+import net.kings_of_devs.cozy_camping.block.BlockRegistry;
 import net.kings_of_devs.cozy_camping.datagen.RecipeDatagen;
 import net.kings_of_devs.cozy_camping.datagen.recipe.util.RecipeData;
 import net.kings_of_devs.cozy_camping.datagen.recipe.util.RecipePatterns;
@@ -51,18 +52,8 @@ public class RecipeRegistry {
     }
 
     public static void init() {
-        //Generic patterns
-        registerStairPatterns();
-        registerSlabPatterns();
-        registerBricksPatterns();
-        registerWallPatterns();
-        registerDyingPatterns();
-        registerStickPatterns();
-
         //Unique patterns
         registerMisc();
-
-        //Shapeless
 
         //Other Types
         StonecuttingRecipeRegistry.init();
@@ -71,97 +62,35 @@ public class RecipeRegistry {
         LOGGER.info("ATBYW Recipes Inintiliazed");
     }
 
-    private static void registerStairPatterns() {
-        //Map<RecipeData, Input
-        var count = 4;
-        var map = Maps.<RecipeData, ItemConvertible>newHashMap();
-
-        for (var entry : map.entrySet()) {
-            var pattern = patterns.stairsPattern(entry.getValue());
-            var recipeData = entry.getKey();
-            registerShapedRecipe(recipeData, pattern.getLeft(), pattern.getRight());
-        }
-    }
-
-    private static void registerSlabPatterns() {
-        //Map<RecipeData, Input>
-        var map = Maps.<RecipeData, ItemConvertible>newHashMap();
-
-        for (var entry : map.entrySet()) {
-            var pattern = patterns.slabPattern(entry.getValue());
-            var recipeData = entry.getKey();
-            registerShapedRecipe(recipeData, pattern.getLeft(), pattern.getRight());
-        }
-    }
-
-    private static void registerBricksPatterns() {
-        //Map<RecipeData, Input>
-        var brickCount = 4;
-        var glassCount = 1;
-        var map = Maps.<RecipeData, ItemConvertible>newHashMap();
-
-        for (var entry : map.entrySet()) {
-            var pattern = patterns.bricksPattern(entry.getValue());
-            var recipeData = entry.getKey();
-            registerShapedRecipe(recipeData, pattern.getLeft(), pattern.getRight());
-        }
-    }
-
-    private static void registerWallPatterns() {
-        //Map<RecipeData, Input>
-        var count = 6;
-        var map = Maps.<RecipeData, ItemConvertible>newHashMap();
-
-        for (var entry : map.entrySet()) {
-            var pattern = patterns.bricksPattern(entry.getValue());
-            var recipeData = entry.getKey();
-            registerShapedRecipe(recipeData, pattern.getLeft(), pattern.getRight());
-        }
-    }
-
-    private static RecipeData dyeingRecipeData(String group, ItemConvertible result, int count) {
-        return new RecipeData("dyeing", "dyeing", group, result, count);
-    }
-
-    private static void registerDyingPatterns() {
-        //Map<RecipeData, Input>
-        var count = 8;
-        var dyeingMap = Maps.<RecipeData, ItemConvertible>newHashMap();
-
-        //Map<Pair<Input outer ring, Input middle>, Output>
-        var map = Maps.<RecipeData, Pair<ItemConvertible, ItemConvertible>>newHashMap();
-
-        for (var color : DyeColor.values()) {
-            for (var entry : dyeingMap.entrySet()) {
-                var recipeData = entry.getKey();
-                if (Registry.ITEM.getId(recipeData.result().asItem()).getPath().contains(color.asString())) {
-                    var pattern = patterns.dyingRingPattern(entry.getValue(), DyeItem.byColor(color));
-                    registerShapedRecipe(recipeData, pattern.getLeft(), pattern.getRight());
-                }
-            }
-        }
-
-        for (var entry : map.entrySet()) {
-            var pattern = patterns.dyingRingPattern(entry.getValue().getLeft(), entry.getValue().getRight());
-            var recipeData = entry.getKey();
-            registerShapedRecipe(recipeData, pattern.getLeft(), pattern.getRight());
-        }
-    }
-
-    private static void registerStickPatterns() {
-        //Map<RecipeData, Input>
-        var map = Maps.<RecipeData, ItemConvertible>newHashMap();
-
-        for (var entry : map.entrySet()) {
-            var pattern = patterns.stickPattern(entry.getValue());
-            var recipeData = entry.getKey();
-            registerShapedRecipe(recipeData, pattern.getLeft(), pattern.getRight());
-        }
-    }
-
     private static void registerMisc() {
         var keys = HashMultimap.<Character, Ingredient>create();
         var recipeData = (RecipeData) null;
+
+        var tentMap = Maps.<RecipeData, ItemConvertible>newHashMap();
+        tentMap.put(new RecipeData("tents", "tents", BlockRegistry.WHITE_TENT, 1), Blocks.WHITE_WOOL);
+        tentMap.put(new RecipeData("tents", "tents", BlockRegistry.ORANGE_TENT, 1), Blocks.ORANGE_WOOL);
+        tentMap.put(new RecipeData("tents", "tents", BlockRegistry.MAGENTA_TENT, 1), Blocks.MAGENTA_WOOL);
+        tentMap.put(new RecipeData("tents", "tents", BlockRegistry.LIGHT_BLUE_TENT, 1), Blocks.LIGHT_BLUE_WOOL);
+        tentMap.put(new RecipeData("tents", "tents", BlockRegistry.YELLOW_TENT, 1), Blocks.YELLOW_WOOL);
+        tentMap.put(new RecipeData("tents", "tents", BlockRegistry.LIME_TENT, 1), Blocks.LIME_WOOL);
+        tentMap.put(new RecipeData("tents", "tents", BlockRegistry.PINK_TENT, 1), Blocks.PINK_WOOL);
+        tentMap.put(new RecipeData("tents", "tents", BlockRegistry.GRAY_TENT, 1), Blocks.GRAY_WOOL);
+        tentMap.put(new RecipeData("tents", "tents", BlockRegistry.LIGHT_GRAY_TENT, 1), Blocks.LIGHT_GRAY_WOOL);
+        tentMap.put(new RecipeData("tents", "tents", BlockRegistry.CYAN_TENT, 1), Blocks.CYAN_WOOL);
+        tentMap.put(new RecipeData("tents", "tents", BlockRegistry.PURPLE_TENT, 1), Blocks.PURPLE_WOOL);
+        tentMap.put(new RecipeData("tents", "tents", BlockRegistry.BLUE_TENT, 1), Blocks.BLUE_WOOL);
+        tentMap.put(new RecipeData("tents", "tents", BlockRegistry.BROWN_TENT, 1), Blocks.BROWN_WOOL);
+        tentMap.put(new RecipeData("tents", "tents", BlockRegistry.GREEN_TENT, 1), Blocks.GREEN_WOOL);
+        tentMap.put(new RecipeData("tents", "tents", BlockRegistry.RED_TENT, 1), Blocks.RED_WOOL);
+        tentMap.put(new RecipeData("tents", "tents", BlockRegistry.BLACK_TENT, 1), Blocks.BLACK_WOOL);
+        for (var entry : tentMap.entrySet()) {
+            keys.clear();
+            keys.put('W', Ingredient.ofItems(entry.getValue()));
+            keys.put('S', Ingredient.ofItems(Items.STICK));
+            registerShapedRecipe(entry.getKey(), new String[] {"WWW", "WSW", "SSS"}, keys);
+        }
+
+
 
         //Example of recipe
         //keys.clear();

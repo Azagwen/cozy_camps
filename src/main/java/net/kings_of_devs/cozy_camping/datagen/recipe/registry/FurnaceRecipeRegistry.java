@@ -4,7 +4,6 @@ import com.google.common.collect.Maps;
 import net.kings_of_devs.cozy_camping.CozyCampingMain;
 import net.kings_of_devs.cozy_camping.datagen.RecipeDatagen;
 import net.kings_of_devs.cozy_camping.datagen.recipe.util.FurnaceRecipeData;
-import net.minecraft.block.Blocks;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.Recipe;
