@@ -24,7 +24,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.List;
 
 public class RecipeRegistry {
-    public static final Logger LOGGER = LogManager.getLogger("Atbyw Recipes");
+    public static final Logger LOGGER = LogManager.getLogger("Cozy Camping Recipes");
     public static final RecipePatterns patterns = new RecipePatterns();
     public static final List<Recipe<?>> dyingRecipes = Lists.newArrayList();
 
@@ -132,6 +132,11 @@ public class RecipeRegistry {
         keys.clear();
         pattern = patterns.bricksPattern(ItemRegistry.BURNED_STICK);
         recipeData = new RecipeData("", "charcoal_from_burned_stick", Items.CHARCOAL, 1);
+        registerShapedRecipe(recipeData, pattern.getLeft(), pattern.getRight());
+
+        keys.clear();
+        pattern = patterns.oreBlockPattern(Items.CHARCOAL);
+        recipeData = new RecipeData("", "charcoal_block", BlockRegistry.CHARCOAL_BLOCK, 1);
         registerShapedRecipe(recipeData, pattern.getLeft(), pattern.getRight());
 
         keys.clear();

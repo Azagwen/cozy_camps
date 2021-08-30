@@ -41,6 +41,11 @@ public record RecipePatterns() {
         return oneIngredientPattern(pattern, ingredient);
     }
 
+    public Pair<String[], Multimap<Character, Ingredient>> oreBlockPattern(ItemConvertible ingredient) {
+        var pattern = new String[] {"AAA", "AAA", "AAA"};
+        return oneIngredientPattern(pattern, ingredient);
+    }
+
     public Pair<String[], Multimap<Character, Ingredient>> wallPattern(ItemConvertible ingredient) {
         var pattern = new String[] {"AAA", "AAA"};
         return oneIngredientPattern(pattern, ingredient);
