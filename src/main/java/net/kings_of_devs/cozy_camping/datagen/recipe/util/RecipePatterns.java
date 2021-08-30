@@ -56,11 +56,6 @@ public record RecipePatterns() {
         return oneIngredientPattern(pattern, ingredient);
     }
 
-    public Pair<String[], Multimap<Character, Ingredient>> fenceDoorPattern(ItemConvertible ingredient) {
-        var pattern = new String[] {"A A", "A A", "A A"};
-        return oneIngredientPattern(pattern, ingredient);
-    }
-
     public Pair<String[], Multimap<Character, Ingredient>> hollowStarPattern(ItemConvertible ingredient) {
         var pattern = new String[] {" A ", "A A", " A "};
         return oneIngredientPattern(pattern, ingredient);

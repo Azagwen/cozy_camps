@@ -27,14 +27,14 @@ public class BlockRegistry {
 
     public static final Block CHARCOAL_BLOCK = new Block(FabricBlockSettings.copyOf(Blocks.COAL_BLOCK).requiresTool().breakByTool(FabricToolTags.PICKAXES));
 
-    public static final Block OAK_STUMP = createStump(Blocks.OAK_PLANKS);
-    public static final Block SPRUCE_STUMP = createStump(Blocks.SPRUCE_PLANKS);
-    public static final Block BIRCH_STUMP = createStump(Blocks.BIRCH_PLANKS);
-    public static final Block JUNGLE_STUMP = createStump(Blocks.JUNGLE_PLANKS);
-    public static final Block ACACIA_STUMP = createStump(Blocks.ACACIA_PLANKS);
-    public static final Block DARK_OAK_STUMP = createStump(Blocks.DARK_OAK_PLANKS);
-    public static final Block CRIMSON_STUMP = createStump(Blocks.CRIMSON_PLANKS);
-    public static final Block WARPED_STUMP = createStump(Blocks.WARPED_PLANKS);
+    public static final Block OAK_STUMP = createStump(Blocks.OAK_LOG);
+    public static final Block SPRUCE_STUMP = createStump(Blocks.SPRUCE_LOG);
+    public static final Block BIRCH_STUMP = createStump(Blocks.BIRCH_LOG);
+    public static final Block JUNGLE_STUMP = createStump(Blocks.JUNGLE_LOG);
+    public static final Block ACACIA_STUMP = createStump(Blocks.ACACIA_LOG);
+    public static final Block DARK_OAK_STUMP = createStump(Blocks.DARK_OAK_LOG);
+    public static final Block CRIMSON_STUMP = createStump(Blocks.CRIMSON_STEM);
+    public static final Block WARPED_STUMP = createStump(Blocks.WARPED_STEM);
 
     public static final Block WHITE_TENT = createTent(DyeColor.WHITE);
     public static final Block ORANGE_TENT = createTent(DyeColor.ORANGE);

@@ -1,8 +1,10 @@
 package net.kings_of_devs.cozy_camping.block;
 
+import net.kings_of_devs.cozy_camping.CozyCampingMain;
 import net.kings_of_devs.cozy_camping.block.entity.TentBlockEntity;
 import net.kings_of_devs.cozy_camping.block.state.CozyCampProperties;
 import net.kings_of_devs.cozy_camping.block.state.TentPiece;
+import net.kings_of_devs.cozy_camping.util.PlayerEntityDuck;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.enums.DoubleBlockHalf;
@@ -17,7 +19,11 @@ import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.state.property.EnumProperty;
 import net.minecraft.state.property.Properties;
+import net.minecraft.text.TranslatableText;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.DyeColor;
+import net.minecraft.util.Hand;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
@@ -29,6 +35,7 @@ import net.minecraft.world.event.GameEvent;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 
 public class TentBlock extends BlockWithEntity {
@@ -91,51 +98,41 @@ public class TentBlock extends BlockWithEntity {
         return state.getBlock() instanceof TentBlock ? state.get(FACING).getOpposite() : null;
     }
 
-    /**
-     *  Way too buggy for now
-     */
-//    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-//        if (player.getMainHandStack().isOf(BlockRegistry.SLEEPING_BAG.asItem())) {
-//            if (state.get(HAS_LEFT_BAG) && state.get(HAS_RIGHT_BAG)) {
-//                return ActionResult.PASS;
-//            } else {
-//                var newPos = state.get(HALF) == DoubleBlockHalf.LOWER ? pos : pos.down();
-//                if (state.get(HAS_LEFT_BAG)) {
-//                    this.trySetBag(world, newPos, state, state.with(HAS_RIGHT_BAG, true));
-//                } else {
-//                    this.trySetBag(world, newPos, state, state.with(HAS_LEFT_BAG, true));
-//                }
-//                player.getMainHandStack().decrement(1);
-//            }
-//        }
-//        if (world.isClient) {
-//            return ActionResult.CONSUME;
-//        } else {
-//            var actionResult = new AtomicReference<ActionResult>();
-//            this.loopThroughSlice(state, (x, z) -> {
-//                var newPos = pos.offset(Direction.Axis.X, x).offset(Direction.Axis.Z, z);
-//                var foundState = world.getBlockState(newPos);
-//                if (foundState.isOf(this.asBlock()) && foundState.get(PIECE) == TentPiece.CENTER) {
-//                    newPos = foundState.get(HALF) == DoubleBlockHalf.LOWER ? newPos : newPos.down();
+    @Override
+    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+        var actionResult = new AtomicReference<ActionResult>();
+        if (world.isClient) {
+            actionResult.set(ActionResult.CONSUME);
+        } else {
+            if (player.getMainHandStack().isOf(BlockRegistry.SLEEPING_BAG.asItem())) {
+                actionResult.set(ActionResult.PASS);
+            } else {
+                this.loopThroughSlice(state, (x, z) -> {
+                    var newPos = pos.offset(Direction.Axis.X, x).offset(Direction.Axis.Z, z);
+                    var foundState = world.getBlockState(newPos);
+                    if (foundState.isOf(this.asBlock()) && foundState.get(PIECE) == TentPiece.CENTER) {
+                        newPos = foundState.get(HALF) == DoubleBlockHalf.LOWER ? newPos : newPos.down();
 
-//                    if (!world.getDimension().isBedWorking()) {
-//                        player.sendMessage(new TranslatableText("block." + CozyCampingMain.MOD_ID + ".tent.cannot_use"), true);
-//                        actionResult.set(ActionResult.PASS);
-//                    } else {
-//                        var playerDuck = (PlayerEntityDuck) player;
-//                        if (state.get(LEFT_OCCUPIED) && state.get(RIGHT_OCCUPIED)) {
-//                            player.sendMessage(new TranslatableText("block." + CozyCampingMain.MOD_ID + ".tent.full"), true);
-//                            actionResult.set(ActionResult.PASS);
-//                        } else {
-//                            playerDuck.sleepFromTent(newPos, !state.get(LEFT_OCCUPIED));
-//                            actionResult.set(ActionResult.SUCCESS);
-//                        }
-//                    }
-//                }
-//            }, false);
-//            return actionResult.get();
-//        }
-//    }
+                        if (!world.getDimension().isBedWorking()) {
+                            player.sendMessage(new TranslatableText("block." + CozyCampingMain.MOD_ID + ".tent.cannot_use"), true);
+                            actionResult.set(ActionResult.PASS);
+                        } else {
+                            var playerDuck = (PlayerEntityDuck) player;
+                            if (state.get(LEFT_OCCUPIED) && state.get(RIGHT_OCCUPIED)) {
+                                player.sendMessage(new TranslatableText("block." + CozyCampingMain.MOD_ID + ".tent.full"), true);
+                                actionResult.set(ActionResult.PASS);
+                            } else {
+                                playerDuck.sleepFromTent(newPos, !state.get(LEFT_OCCUPIED));
+                                actionResult.set(ActionResult.SUCCESS);
+                            }
+                        }
+                    }
+                }, false);
+            }
+        }
+        actionResult.set(ActionResult.PASS);
+        return actionResult.get();
+    }
 
     public DyeColor getColor() {
         return color;
@@ -173,6 +170,7 @@ public class TentBlock extends BlockWithEntity {
 
     @Override
     public void onPlaced(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack itemStack) {
+        super.onPlaced(world, pos, state, placer, itemStack);
         var upperHalf = state.with(HALF, DoubleBlockHalf.UPPER);
         //Upper
         world.setBlockState(pos.up(), upperHalf, Block.NOTIFY_ALL);
@@ -300,26 +298,12 @@ public class TentBlock extends BlockWithEntity {
         this.loopThroughSlice(state, (x, z) -> {
             var newPos = basePos.offset(Direction.Axis.X, x).offset(Direction.Axis.Z, z);
             if (world.getBlockState(newPos).isOf(this.asBlock())) {
-                this.breakBlock(world,newPos, canLoot, player);
+                BlockUtils.breakBlockSilent(world,newPos, canLoot, player);
             }
             if (world.getBlockState(newPos.offset(half.getOpposite())).isOf(this.asBlock())) {
-                this.breakBlock(world, newPos.offset(half.getOpposite()), canLoot, player);
+                BlockUtils.breakBlockSilent(world, newPos.offset(half.getOpposite()), canLoot, player);
             }
         }, false);
-    }
-
-    public void breakBlock(World world, BlockPos pos, boolean drop, @Nullable Entity breakingEntity) {
-        var blockState = world.getBlockState(pos);
-        var fluidState = world.getFluidState(pos);
-        var hasBroken = world.setBlockState(pos, fluidState.getBlockState(), Block.NOTIFY_ALL, 512);
-        world.addBlockBreakParticles(pos, blockState);
-
-        if (drop) {
-            Block.dropStacks(blockState, world, pos, null, breakingEntity, ItemStack.EMPTY);
-        }
-        if (hasBroken) {
-            world.emitGameEvent(breakingEntity, GameEvent.BLOCK_DESTROY, pos);
-        }
     }
 
     @Override

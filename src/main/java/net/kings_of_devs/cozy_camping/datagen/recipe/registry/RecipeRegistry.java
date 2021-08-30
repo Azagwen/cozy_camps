@@ -9,20 +9,18 @@ import net.kings_of_devs.cozy_camping.block.BlockRegistry;
 import net.kings_of_devs.cozy_camping.datagen.RecipeDatagen;
 import net.kings_of_devs.cozy_camping.datagen.recipe.util.RecipeData;
 import net.kings_of_devs.cozy_camping.datagen.recipe.util.RecipePatterns;
+import net.kings_of_devs.cozy_camping.item.ItemRegistry;
 import net.minecraft.block.Blocks;
-import net.minecraft.item.DyeItem;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.Items;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.tag.ItemTags;
-import net.minecraft.util.DyeColor;
 import net.minecraft.util.Pair;
 import net.minecraft.util.registry.Registry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.HashMap;
 import java.util.List;
 
 public class RecipeRegistry {
@@ -54,6 +52,7 @@ public class RecipeRegistry {
     public static void init() {
         //Unique patterns
         registerTentRecipes();
+        registerStumpRecipes();
         registerMisc();
 
         //Other Types
@@ -61,6 +60,24 @@ public class RecipeRegistry {
         FurnaceRecipeRegistry.init();
 
         LOGGER.info("ATBYW Recipes Inintiliazed");
+    }
+
+    private static void registerStumpRecipes() {
+        var stumpMap = Maps.<RecipeData, ItemConvertible>newHashMap();
+        stumpMap.put(new RecipeData("stumps", "stumps", BlockRegistry.OAK_STUMP, 4), Blocks.OAK_LOG);
+        stumpMap.put(new RecipeData("stumps", "stumps", BlockRegistry.SPRUCE_STUMP, 4), Blocks.SPRUCE_LOG);
+        stumpMap.put(new RecipeData("stumps", "stumps", BlockRegistry.BIRCH_STUMP, 4), Blocks.BIRCH_LOG);
+        stumpMap.put(new RecipeData("stumps", "stumps", BlockRegistry.JUNGLE_STUMP, 4), Blocks.JUNGLE_LOG);
+        stumpMap.put(new RecipeData("stumps", "stumps", BlockRegistry.ACACIA_STUMP, 4), Blocks.ACACIA_LOG);
+        stumpMap.put(new RecipeData("stumps", "stumps", BlockRegistry.DARK_OAK_STUMP, 4), Blocks.DARK_OAK_LOG);
+        stumpMap.put(new RecipeData("stumps", "stumps", BlockRegistry.CRIMSON_STUMP, 4), Blocks.CRIMSON_STEM);
+        stumpMap.put(new RecipeData("stumps", "stumps", BlockRegistry.WARPED_STUMP, 4), Blocks.WARPED_STEM);
+
+        for (var entry : stumpMap.entrySet()) {
+            var keys = HashMultimap.<Character, Ingredient>create();
+            keys.put('L', Ingredient.ofItems(entry.getValue()));
+            registerShapedRecipe(entry.getKey(), new String[] {"L", "L"}, keys);
+        }
     }
 
     private static void registerTentRecipes() {
@@ -81,6 +98,7 @@ public class RecipeRegistry {
         tentMap.put(new RecipeData("tents", "tents", BlockRegistry.GREEN_TENT, 1), Blocks.GREEN_WOOL);
         tentMap.put(new RecipeData("tents", "tents", BlockRegistry.RED_TENT, 1), Blocks.RED_WOOL);
         tentMap.put(new RecipeData("tents", "tents", BlockRegistry.BLACK_TENT, 1), Blocks.BLACK_WOOL);
+
         for (var entry : tentMap.entrySet()) {
             var keys = HashMultimap.<Character, Ingredient>create();
             keys.put('W', Ingredient.ofItems(entry.getValue()));
@@ -91,15 +109,39 @@ public class RecipeRegistry {
 
     private static void registerMisc() {
         var keys = HashMultimap.<Character, Ingredient>create();
+        var pattern = new Pair<String[], Multimap<Character, Ingredient>>(null, null);
         var recipeData = (RecipeData) null;
 
-        //Example of recipe
-        //keys.clear();
-        //keys.put('G', Ingredient.ofItems(Items.GOLD_INGOT));
-        //keys.put('R', Ingredient.ofItems(Items.REDSTONE));
-        //keys.put('#', Ingredient.ofItems(Items.REPEATER));
-        //recipeData = new RecipeData("redstone", "timer_repeater", AtbywBlocks.TIMER_REPEATER, 1);
-        //registerShapedRecipe(recipeData, new String[] {"GRG", "R#R", "GRG"}, keys);
+        keys.clear();
+        keys.put('L', Ingredient.ofItems(Items.LEATHER));
+        keys.put('W', Ingredient.fromTag(ItemTags.WOOL));
+        keys.put('S', Ingredient.ofItems(Items.STRING));
+        recipeData = new RecipeData("", "sleeping_bag", BlockRegistry.SLEEPING_BAG, 1);
+        registerShapedRecipe(recipeData, new String[] {"SLL", "WWW", "LLL"}, keys);
 
+        keys.clear();
+        keys.put('I', Ingredient.ofItems(Items.IRON_INGOT));
+        recipeData = new RecipeData("", "bear_trap", BlockRegistry.BEAR_TRAP, 1);
+        registerShapedRecipe(recipeData, new String[] {"I I", "III"}, keys);
+
+        keys.clear();
+        pattern = patterns.bricksPattern(Items.SUGAR);
+        recipeData = new RecipeData("", "marshmallow", ItemRegistry.MARSHMALLOW, 2);
+        registerShapedRecipe(recipeData, pattern.getLeft(), pattern.getRight());
+
+        keys.clear();
+        pattern = patterns.bricksPattern(ItemRegistry.BURNED_STICK);
+        recipeData = new RecipeData("", "charcoal_from_burned_stick", Items.CHARCOAL, 1);
+        registerShapedRecipe(recipeData, pattern.getLeft(), pattern.getRight());
+
+        keys.clear();
+        pattern = patterns.torchPattern(ItemRegistry.MARSHMALLOW, Items.STICK);
+        recipeData = new RecipeData("stick_marshmallows", "marshmallow_on_a_stick", ItemRegistry.MARSHMALLOW_ON_A_STICK, 1);
+        registerShapedRecipe(recipeData, pattern.getLeft(), pattern.getRight());
+
+        keys.clear();
+        pattern = patterns.torchPattern(ItemRegistry.ROASTED_MARSHMALLOW, Items.STICK);
+        recipeData = new RecipeData("stick_marshmallows", "roasted_marshmallow_on_a_stick", ItemRegistry.ROASTED_MARSHMALLOW_ON_A_STICK, 1);
+        registerShapedRecipe(recipeData, pattern.getLeft(), pattern.getRight());
     }
 }

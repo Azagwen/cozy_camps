@@ -21,7 +21,7 @@ public class TentBlockEntity extends BlockEntity {
     }
 
     public BlockEntityUpdateS2CPacket toUpdatePacket() {
-        return new BlockEntityUpdateS2CPacket(this.pos, BlockEntityUpdateS2CPacket.BED, this.toInitialChunkDataNbt());
+        return new BlockEntityUpdateS2CPacket(this.pos, BlockEntityPackets.TENT, this.toInitialChunkDataNbt());
     }
 
     public DyeColor getColor() {

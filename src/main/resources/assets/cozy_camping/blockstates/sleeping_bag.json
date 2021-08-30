@@ -1,0 +1,13 @@
+{
+    "variants": {
+        "facing=north,part=head": { "model": "cozy_camping:block/sleeping_bag_head", "y": 180 },
+        "facing=east,part=head": { "model": "cozy_camping:block/sleeping_bag_head", "y": 270 },
+        "facing=south,part=head": { "model": "cozy_camping:block/sleeping_bag_head" },
+        "facing=west,part=head": { "model": "cozy_camping:block/sleeping_bag_head", "y": 90 },
+
+        "facing=north,part=foot": { "model": "cozy_camping:block/sleeping_bag_feet", "y": 180 },
+        "facing=east,part=foot": { "model": "cozy_camping:block/sleeping_bag_feet", "y": 270 },
+        "facing=south,part=foot": { "model": "cozy_camping:block/sleeping_bag_feet" },
+        "facing=west,part=foot": { "model": "cozy_camping:block/sleeping_bag_feet", "y": 90 }
+    }
+}

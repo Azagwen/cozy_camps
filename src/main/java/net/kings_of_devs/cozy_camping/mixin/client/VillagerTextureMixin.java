@@ -1,4 +1,4 @@
-package net.kings_of_devs.cozy_camping.mixin;
+package net.kings_of_devs.cozy_camping.mixin.client;
 
 import net.minecraft.client.render.entity.feature.VillagerClothingFeatureRenderer;
 import net.minecraft.util.Identifier;

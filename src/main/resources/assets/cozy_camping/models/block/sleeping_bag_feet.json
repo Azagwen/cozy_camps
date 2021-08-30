@@ -1,0 +1,23 @@
+{
+    "credit": "Made with Blockbench",
+    "texture_size": [64, 64],
+    "textures": {
+        "particle": "#texture",
+        "texture": "cozy_camping:block/sleeping_bag_model"
+    },
+    "elements": [
+        {
+            "name": "feet",
+            "from": [0, 0, 0],
+            "to": [16, 6, 16],
+            "faces": {
+                "north": {"uv": [5.5, 5.5, 9.5, 7], "rotation": 180, "texture": "#texture"},
+                "east": {"uv": [7, 7, 5.5, 11], "rotation": 270, "texture": "#texture"},
+                "south": {"uv": [1.5, 7, 5.5, 5.5], "texture": "#texture"},
+                "west": {"uv": [1.5, 7, 0, 11], "rotation": 90, "texture": "#texture"},
+                "up": {"uv": [5.5, 7, 1.5, 11], "rotation": 180, "texture": "#texture"},
+                "down": {"uv": [11, 7, 7, 11], "texture": "#texture"}
+            }
+        }
+    ]
+}

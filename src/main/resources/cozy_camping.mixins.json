@@ -8,7 +8,6 @@
         "EntityMixin",
         "LivingEntityMixin",
         "PlayerEntityMixin",
-        "VillagerTextureMixin",
         "accessor.BedBlockAccessor",
         "accessor.LivingEntityAccessor",
         "accessor.ShapedRecipeAccessor",
@@ -16,7 +15,9 @@
         "datagen.ServerAdvancementLoaderMixin"
     ],
     "client": [
-        "client.CreativeInventoryScreenMixin"
+        "client.ClientPlayNetworkHandlerMixin",
+        "client.CreativeInventoryScreenMixin",
+        "client.VillagerTextureMixin"
     ],
     "injectors": {
         "defaultRequire": 1

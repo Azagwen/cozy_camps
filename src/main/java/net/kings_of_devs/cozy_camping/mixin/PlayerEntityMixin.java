@@ -2,12 +2,13 @@ package net.kings_of_devs.cozy_camping.mixin;
 
 import net.kings_of_devs.cozy_camping.CozyCampingMain;
 import net.kings_of_devs.cozy_camping.block.BlockRegistry;
-import net.kings_of_devs.cozy_camping.block.TrapBlock;
-import net.kings_of_devs.cozy_camping.block.entity.TrapBlockEntity;
+import net.kings_of_devs.cozy_camping.block.SleepingBagBlock;
 import net.kings_of_devs.cozy_camping.util.PlayerEntityDuck;
 import net.kings_of_devs.cozy_camping.block.TentBlock;
 import net.kings_of_devs.cozy_camping.item.ItemRegistry;
+import net.minecraft.block.BedBlock;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.player.PlayerEntity;
@@ -15,6 +16,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
@@ -24,6 +26,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(PlayerEntity.class)
 public abstract class PlayerEntityMixin implements PlayerEntityDuck {
     private final PlayerEntity self = (PlayerEntity) (Object) this;
+    private boolean cozyCamping$isInSleepingBag;
     @Shadow private int sleepTimer;
 
     @ModifyArg(method = "tickMovement", at =
@@ -53,7 +56,7 @@ public abstract class PlayerEntityMixin implements PlayerEntityDuck {
     @Override
     public void sleepFromTent(BlockPos pos, boolean isLeft) {
         if (self.hasVehicle()) {
-           self.stopRiding();
+            self.stopRiding();
         }
 
         var state = self.world.getBlockState(pos);
@@ -88,5 +91,47 @@ public abstract class PlayerEntityMixin implements PlayerEntityDuck {
         self.setVelocity(Vec3d.ZERO);
         self.velocityDirty = true;
         this.sleepTimer = 0;
+        this.setIsSleepingInBag(true);
+    }
+
+    @Override
+    public void sleepFromBag(BlockPos pos) {
+        if (self.hasVehicle()) {
+            self.stopRiding();
+        }
+
+        var blockState = self.world.getBlockState(pos);
+        if (blockState.getBlock() instanceof SleepingBagBlock) {
+            self.world.setBlockState(pos, blockState.with(SleepingBagBlock.OCCUPIED, true), Block.NOTIFY_ALL);
+        }
+
+        var x = (pos.getX() + 0.5D);
+        var y = (pos.getY() + 0.5D);
+        var z = (pos.getZ() + 0.5D);
+
+        self.setPose(EntityPose.SLEEPING);
+        self.setPosition(x, y, z);
+        self.setSleepingPosition(pos);
+        self.setVelocity(Vec3d.ZERO);
+        self.velocityDirty = true;
+        this.sleepTimer = 0;
+        this.setIsSleepingInBag(true);
+    }
+
+    @Inject(method = "wakeUp(ZZ)V", at = @At("HEAD"))
+    private void wakeUp(boolean bl, boolean updateSleepingPlayers, CallbackInfo ci) {
+        this.setIsSleepingInBag(false);
+    }
+
+    @Override
+    public boolean isSleepingInBag() {
+        System.out.println("isSleepingInBag: " + this.cozyCamping$isInSleepingBag);
+        return this.cozyCamping$isInSleepingBag;
+    }
+
+    @Override
+    public void setIsSleepingInBag(boolean value) {
+        System.out.println("setIsSleepingInBag");
+        this.cozyCamping$isInSleepingBag = value;
     }
 }
