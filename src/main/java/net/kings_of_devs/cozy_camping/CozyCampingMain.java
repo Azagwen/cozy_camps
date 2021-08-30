@@ -19,8 +19,7 @@ import net.kings_of_devs.cozy_camping.worldgen.*;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
-import net.minecraft.entity.attribute.EntityAttributeModifier;
-import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.item.Item;
 import net.minecraft.server.command.CommandManager;
@@ -46,6 +45,7 @@ public class CozyCampingMain implements ModInitializer {
 	public static final EntityType<SeatEntity> SEAT = FabricEntityTypeBuilder.create(SpawnGroup.MISC, SeatEntity::new).dimensions(EntityDimensions.fixed(0.0F, 0.0F)).fireImmune().disableSummon().build();
 
 	public static final StatusEffect TRAPPED = new TrappedStatusEffect();
+	public static final DamageSource TRAP = new TrapDamageSource("trap");
 
 	@Override
 	public void onInitialize() {

@@ -10,6 +10,7 @@ import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectType;
 
 public class TrappedStatusEffect extends StatusEffect {
+    private boolean canApplyEffect = true;
 
     public TrappedStatusEffect() {
         super(StatusEffectType.HARMFUL,0x572623);
@@ -18,12 +19,16 @@ public class TrappedStatusEffect extends StatusEffect {
 
     @Override
     public boolean canApplyUpdateEffect(int duration, int amplifier) {
-        return true;
+        return this.canApplyEffect;
     }
 
     @Override
     public void applyUpdateEffect(LivingEntity entity, int amplifier) {
-        entity.damage(DamageSource.MAGIC, 2);
-        ((LivingEntityAccessor) entity).setJumpingCooldown(60);
+        if (entity.world.getBlockState(entity.getBlockPos()).isOf(BlockRegistry.BEAR_TRAP)) {
+            entity.damage(CozyCampingMain.TRAP, 2);
+            ((LivingEntityAccessor) entity).setJumpingCooldown(60);
+        } else {
+            this.canApplyEffect = false;
+        }
     }
 }
