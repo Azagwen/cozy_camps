@@ -9,7 +9,6 @@ import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.enums.DoubleBlockHalf;
 import net.minecraft.block.piston.PistonBehavior;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
@@ -232,7 +231,7 @@ public class TentBlock extends BlockWithEntity {
         this.loopThroughSlice(state, (x, z) -> {
             var newPos = pos.offset(Direction.Axis.X, x).offset(Direction.Axis.Z, z);
             var downState = world.getBlockState(newPos.down());
-            if (!world.getBlockState(newPos).isAir())
+            if (!world.getBlockState(newPos).getMaterial().isReplaceable())
                 canPlace.set(false);
             if (!downState.isSideSolidFullSquare(world, newPos.down(), Direction.UP) && !downState.isOf(this.asBlock()))
                 canPlace.set(false);
@@ -240,7 +239,7 @@ public class TentBlock extends BlockWithEntity {
         //Check Upper half
         this.loopThroughSlice(state, (x, z) -> {
             var newPos = pos.offset(Direction.Axis.X, x).offset(Direction.Axis.Z, z);
-            if (!world.getBlockState(newPos.up()).isAir())
+            if (!world.getBlockState(newPos.up()).getMaterial().isReplaceable())
                 canPlace.set(false);
         }, true);
         return canPlace.get();

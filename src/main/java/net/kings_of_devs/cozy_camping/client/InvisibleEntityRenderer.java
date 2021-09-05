@@ -1,26 +1,26 @@
 package net.kings_of_devs.cozy_camping.client;
 
 import com.google.common.collect.ImmutableList;
-import net.kings_of_devs.cozy_camping.entity.SeatEntity;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.MobEntityRenderer;
 import net.minecraft.client.render.entity.model.AnimalModel;
+import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.util.Identifier;
 
-public class SeatEntityRenderer extends MobEntityRenderer<SeatEntity, AnimalModel<SeatEntity>> {
+public class InvisibleEntityRenderer<E extends MobEntity> extends MobEntityRenderer<E, AnimalModel<E>> {
     private static final Identifier TEXTURE = new Identifier("minecraft:textures/block/stone.png");
 
-    public SeatEntityRenderer(EntityRendererFactory.Context context) {
-        super(context, new SeatModel(), 0);
+    public InvisibleEntityRenderer(EntityRendererFactory.Context context) {
+        super(context, new InvisibleModel<>(), 0);
     }
 
     @Override
-    public Identifier getTexture(SeatEntity entity) {
+    public Identifier getTexture(E entity) {
         return TEXTURE;
     }
 
-    public static class SeatModel extends AnimalModel<SeatEntity> {
+    public static class InvisibleModel<F extends MobEntity> extends AnimalModel<F> {
         @Override
         protected Iterable<ModelPart> getHeadParts() {
             return ImmutableList.of();
@@ -30,8 +30,9 @@ public class SeatEntityRenderer extends MobEntityRenderer<SeatEntity, AnimalMode
         protected Iterable<ModelPart> getBodyParts() {
             return ImmutableList.of();
         }
+        
         @Override
-        public void setAngles(SeatEntity entity, float limbAngle, float limbDistance, float animationProgress, float headYaw, float headPitch) {
+        public void setAngles(F entity, float limbAngle, float limbDistance, float animationProgress, float headYaw, float headPitch) {
 
         }
     }

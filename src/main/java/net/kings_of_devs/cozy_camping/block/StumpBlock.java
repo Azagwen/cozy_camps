@@ -4,6 +4,7 @@ import com.google.common.collect.Maps;
 import net.kings_of_devs.cozy_camping.CozyCampingMain;
 import net.kings_of_devs.cozy_camping.block.state.CozyCampProperties;
 import net.kings_of_devs.cozy_camping.block.state.StumpShape;
+import net.kings_of_devs.cozy_camping.entity.EntityRegistry;
 import net.kings_of_devs.cozy_camping.entity.SeatEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -67,7 +68,7 @@ public class StumpBlock extends Block implements Waterloggable {
             }
 
             var yaw = player.getHorizontalFacing().asRotation();
-            var entity = CozyCampingMain.SEAT.create(world);
+            var entity = EntityRegistry.SEAT.create(world);
             entity.updatePositionAndAngles(posX, posY, posZ, yaw, 0);
             entity.setNoGravity(true);
             entity.setSilent(true);

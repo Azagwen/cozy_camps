@@ -5,6 +5,7 @@ import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
 import net.kings_of_devs.cozy_camping.CozyCampingMain;
 import net.kings_of_devs.cozy_camping.block.BlockRegistry;
+import net.kings_of_devs.cozy_camping.entity.EntityRegistry;
 import net.minecraft.client.render.RenderLayer;
 
 public class CozyCampingClient implements ClientModInitializer {
@@ -50,6 +51,7 @@ public class CozyCampingClient implements ClientModInitializer {
                 BlockRegistry.BEAR_TRAP
         );
 
-        EntityRendererRegistry.INSTANCE.register(CozyCampingMain.SEAT, SeatEntityRenderer::new);
+        EntityRendererRegistry.INSTANCE.register(EntityRegistry.SEAT, InvisibleEntityRenderer::new);
+        EntityRendererRegistry.INSTANCE.register(EntityRegistry.TRAP, InvisibleEntityRenderer::new);
     }
 }

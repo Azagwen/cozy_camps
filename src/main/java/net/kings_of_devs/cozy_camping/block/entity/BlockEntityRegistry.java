@@ -8,7 +8,6 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.registry.Registry;
 
 public class BlockEntityRegistry {
-    public static BlockEntityType<TrapBlockEntity> BEAR_TRAP;
     public static BlockEntityType<TentBlockEntity> TENT;
 
     @SuppressWarnings("unchecked")
@@ -18,7 +17,6 @@ public class BlockEntityRegistry {
     }
 
     public static void init(){
-        BEAR_TRAP = registerBlockEntity("trap_block_entity", TrapBlockEntity::new, BlockRegistry.BEAR_TRAP);
         TENT = registerBlockEntity("tent", TentBlockEntity::new, BlockRegistry.TENTS.toArray(Block[]::new));
     }
 }

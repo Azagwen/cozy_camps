@@ -10,6 +10,7 @@ import net.kings_of_devs.cozy_camping.block.BlockRegistry;
 import net.kings_of_devs.cozy_camping.block.entity.BlockEntityRegistry;
 import net.kings_of_devs.cozy_camping.datagen.recipe.registry.RecipeRegistry;
 import net.kings_of_devs.cozy_camping.dev.AutoJsonWriter;
+import net.kings_of_devs.cozy_camping.entity.EntityRegistry;
 import net.kings_of_devs.cozy_camping.entity.SeatEntity;
 import net.kings_of_devs.cozy_camping.group.TabbedItemGroup;
 import net.kings_of_devs.cozy_camping.item.ItemRegistry;
@@ -42,8 +43,6 @@ public class CozyCampingMain implements ModInitializer {
 		return new Identifier(MOD_ID, path);
 	}
 
-	public static final EntityType<SeatEntity> SEAT = FabricEntityTypeBuilder.create(SpawnGroup.MISC, SeatEntity::new).dimensions(EntityDimensions.fixed(0.0F, 0.0F)).fireImmune().disableSummon().build();
-
 	public static final StatusEffect TRAPPED = new TrappedStatusEffect();
 	public static final DamageSource TRAP = new TrapDamageSource("trap");
 
@@ -56,17 +55,14 @@ public class CozyCampingMain implements ModInitializer {
 		BlockEntityRegistry.init();
 		WorldgenMain.init();
 		RecipeRegistry.init();
+		EntityRegistry.init();
 
-		CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
-			dispatcher.register(CommandManager.literal("dev_cozy_camping_write_models").executes(context -> {
-				AutoJsonWriter.writeAll();
-				return 1;
-			}));
-		});
-
-		//Registers the Stump Seat entity.
-		Registry.register(Registry.ENTITY_TYPE, id("seat"), SEAT);
-		FabricDefaultAttributeRegistry.register(SEAT, SeatEntity.getAttributeContainer());
+//		CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
+//			dispatcher.register(CommandManager.literal("dev_cozy_camping_write_models").executes(context -> {
+//				AutoJsonWriter.writeAll();
+//				return 1;
+//			}));
+//		});
 
 		//This makes the charcoal block be a fuel, with the same duration as a normal coal block.
 		FuelRegistry.INSTANCE.add(BlockRegistry.CHARCOAL_BLOCK, 16000);

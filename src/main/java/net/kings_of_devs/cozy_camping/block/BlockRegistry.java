@@ -1,6 +1,5 @@
 package net.kings_of_devs.cozy_camping.block;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
@@ -74,7 +73,7 @@ public class BlockRegistry {
 
     public static final Block SLEEPING_BAG = new SleepingBagBlock(FabricBlockSettings.copyOf(OAK_STUMP));
 
-    public static final Block BEAR_TRAP = new TrapBlock(FabricBlockSettings.copyOf(Blocks.IRON_BLOCK).requiresTool().breakByTool(FabricToolTags.PICKAXES).nonOpaque());
+    public static final Block BEAR_TRAP = new BearTrapBlock(FabricBlockSettings.copyOf(Blocks.IRON_BLOCK).requiresTool().breakByTool(FabricToolTags.PICKAXES).nonOpaque());
 
     public static final Block BOULDER = new BoulderBlock(FabricBlockSettings.copyOf(Blocks.STONE).requiresTool().breakByTool(FabricToolTags.PICKAXES).nonOpaque());
     public static final Block GRANITE_BOULDER = new BoulderBlock(FabricBlockSettings.copyOf(Blocks.GRANITE).requiresTool().breakByTool(FabricToolTags.PICKAXES).nonOpaque());
@@ -131,7 +130,7 @@ public class BlockRegistry {
         BlockRegistryUtil.registerBlock(CozyCampingMain.BLOCKS_TAB, "red_ripped_tent", RED_RIPPED_TENT);
         BlockRegistryUtil.registerBlock(CozyCampingMain.BLOCKS_TAB, "black_ripped_tent", BLACK_RIPPED_TENT);
 
-        BlockRegistryUtil.registerBlock(CozyCampingMain.BLOCKS_TAB, "fancy_tent", FANCY_TENT);
+//        BlockRegistryUtil.registerBlock(CozyCampingMain.BLOCKS_TAB, "fancy_tent", FANCY_TENT);
 
         BlockRegistryUtil.registerBlock(CozyCampingMain.BLOCKS_TAB, "sleeping_bag", SLEEPING_BAG);
 
