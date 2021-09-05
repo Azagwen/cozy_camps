@@ -12,10 +12,13 @@ import java.util.Set;
 
 public class BlockRegistry {
     public static final Set<Block> TENTS = Sets.newHashSet();
+    public static final Set<Block> STUMPS = Sets.newHashSet();
 
     private static Block createStump(Block copiedBlock) {
         var material = copiedBlock.getDefaultState().getMaterial();
-        return new StumpBlock(FabricBlockSettings.of(material, copiedBlock.getDefaultMapColor()).breakByTool(FabricToolTags.AXES).sounds(BlockSoundGroup.WOOD));
+        Block block = new StumpBlock(FabricBlockSettings.of(material, copiedBlock.getDefaultMapColor()).breakByTool(FabricToolTags.AXES).sounds(BlockSoundGroup.WOOD));
+        STUMPS.add(block);
+        return block;
     }
 
     private static Block createTent(DyeColor color) {
